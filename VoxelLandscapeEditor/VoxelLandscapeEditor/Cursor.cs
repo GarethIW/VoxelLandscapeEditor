@@ -123,23 +123,37 @@ namespace VoxelLandscapeEditor
                     break;
 
                 case CursorMode.Trees:
-                    //int numTrees = 1 +(Size / 2);
-                    //for (int i = 0; i < numTrees; i++)
+                    int numTrees = 1 +(Size / 2);
+                    for (int i = 0; i < numTrees; i++)
+                    {
+                        Vector2 pos = Helper.RandomPointInCircle(new Vector2(Position.X,Position.Y), 0f, Size);
+
+                        //int z = 0;
+                        //for (int zz = 0; zz < Chunk.Z_SIZE; zz++) if (gameWorld.GetVoxel((int)Position.X, (int)Position.Y, zz).Active) { z = zz - 1; break; }
+
+                        gameWorld.MakeTree((int)pos.X, (int)pos.Y, (int)Position.Z);
+                    }
+
+                    //for (float a = 0f; a < MathHelper.TwoPi; a += 0.05f)
                     //{
-                    //    Vector2 pos = Helper.RandomPointInCircle(new Vector2(Position.X,Position.Y), 0f, Size);
-
-                    //    //int z = 0;
-                    //    //for (int zz = 0; zz < Chunk.Z_SIZE; zz++) if (gameWorld.GetVoxel((int)Position.X, (int)Position.Y, zz).Active) { z = zz - 1; break; }
-
-                    //    gameWorld.MakeTree((int)pos.X, (int)pos.Y, (int)Position.Z);
+                    //    for (int r = 0; r < Size; r++)
+                    //    {
+                    //        Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
+                    //        gameWorld.MakeTree((int)pos.X, (int)pos.Y, (int)Position.Z);
+                    //    }
                     //}
-
+                    break;
+                case CursorMode.Water:
                     for (float a = 0f; a < MathHelper.TwoPi; a += 0.05f)
                     {
                         for (int r = 0; r < Size; r++)
                         {
                             Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
-                            gameWorld.MakeTree((int)pos.X, (int)pos.Y, (int)Position.Z);
+                            for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
+                            {
+                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z >= Chunk.Z_SIZE - (Height-2), VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
+                            }
+                            gameWorld.SetVoxel((int)pos.X, (int)pos.Y, (int)Position.Z , true, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
                         }
                     }
                     break;

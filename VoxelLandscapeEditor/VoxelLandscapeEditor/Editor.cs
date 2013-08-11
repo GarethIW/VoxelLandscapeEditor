@@ -223,8 +223,9 @@ namespace VoxelLandscapeEditor
 
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             //GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-            GraphicsDevice.BlendState = BlendState.Opaque;
+            //GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
             foreach (EffectPass pass in drawEffect.CurrentTechnique.Passes)
             {
@@ -244,7 +245,7 @@ namespace VoxelLandscapeEditor
                 }
             }
 
-            GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            
             foreach (EffectPass pass in cursorEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();

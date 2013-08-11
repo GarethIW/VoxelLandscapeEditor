@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelLandscapeEditor", "Vox
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelLandscapeEditorContent", "VoxelLandscapeEditor\VoxelLandscapeEditorContent\VoxelLandscapeEditorContent.contentproj", "{2F3F3033-395D-4635-BA79-C2020EA97C1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelSpriteEditor", "VoxelSpriteEditor\VoxelSpriteEditor\VoxelSpriteEditor.csproj", "{0FA1F268-CAA3-427B-9C05-747226076624}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "VoxelSpriteEditorContent", "VoxelSpriteEditor\VoxelSpriteEditorContent\VoxelSpriteEditorContent.contentproj", "{BF797D60-7384-48DA-9F61-B8605B19518F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -17,6 +21,12 @@ Global
 		{7D0811EF-B9CD-4F7A-B9B7-E9E089550599}.Release|x86.Build.0 = Release|x86
 		{2F3F3033-395D-4635-BA79-C2020EA97C1B}.Debug|x86.ActiveCfg = Debug|x86
 		{2F3F3033-395D-4635-BA79-C2020EA97C1B}.Release|x86.ActiveCfg = Release|x86
+		{0FA1F268-CAA3-427B-9C05-747226076624}.Debug|x86.ActiveCfg = Debug|x86
+		{0FA1F268-CAA3-427B-9C05-747226076624}.Debug|x86.Build.0 = Debug|x86
+		{0FA1F268-CAA3-427B-9C05-747226076624}.Release|x86.ActiveCfg = Release|x86
+		{0FA1F268-CAA3-427B-9C05-747226076624}.Release|x86.Build.0 = Release|x86
+		{BF797D60-7384-48DA-9F61-B8605B19518F}.Debug|x86.ActiveCfg = Debug|x86
+		{BF797D60-7384-48DA-9F61-B8605B19518F}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
