@@ -6,6 +6,14 @@ using System.Text;
 
 namespace VoxelLandscapeEditor
 {
+    public enum VoxelType
+    {
+        Ground,
+        Tree,
+        Leaf,
+        Water
+    }
+
     public struct Voxel
     {
         public const float SIZE = 0.5f;
@@ -15,9 +23,12 @@ namespace VoxelLandscapeEditor
         public Color TopColor;// = Color.White;
         public Color SideColor;// = Color.Gray;
 
-        public Voxel(bool active, Color top, Color side)
+        public VoxelType Type;
+
+        public Voxel(bool active, VoxelType type, Color top, Color side)
         {
             Active = active;
+            Type = type;
             TopColor = top;
             SideColor = side;
         }

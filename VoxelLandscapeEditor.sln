@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelLandscapeEditor", "VoxelLandscapeEditor\VoxelLandscapeEditor\VoxelLandscapeEditor.csproj", "{7D0811EF-B9CD-4F7A-B9B7-E9E089550599}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "VoxelLandscapeEditorContent", "VoxelLandscapeEditor\VoxelLandscapeEditorContent\VoxelLandscapeEditorContent.contentproj", "{2F3F3033-395D-4635-BA79-C2020EA97C1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelLandscapeEditorContent", "VoxelLandscapeEditor\VoxelLandscapeEditorContent\VoxelLandscapeEditorContent.contentproj", "{2F3F3033-395D-4635-BA79-C2020EA97C1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,5 +20,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
