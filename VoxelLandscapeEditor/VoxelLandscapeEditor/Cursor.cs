@@ -37,7 +37,7 @@ namespace VoxelLandscapeEditor
             UpdateMesh();
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Color col)
         {
             if (Height < 2) Height = 2;
             if (Height > 20) Height = 20;
