@@ -136,8 +136,8 @@ namespace VoxelLandscapeEditor
             if (cks.IsKeyDown(Keys.PageDown) && !lks.IsKeyDown(Keys.PageDown)) cursor.Height--;
             if (cks.IsKeyDown(Keys.Tab) && !lks.IsKeyDown(Keys.Tab)) cursor.Mode++;
 
-            if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save("c:\\temp\\testworld.txt", gameWorld);
-            if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load("c:\\temp\\testworld.txt", ref gameWorld);
+            if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save(gameWorld);
+            if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load(ref gameWorld);
             
 
             if (wheelDelta != 0)

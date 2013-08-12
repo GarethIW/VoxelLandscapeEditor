@@ -106,11 +106,6 @@ namespace VoxelSpriteEditor
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 800f/600f, 0.001f, 100f);
 
             sprite = new VoxelSprite(9, 9, 9, GraphicsDevice);
-            sprite.AddFrame();
-            sprite.AddFrame();
-            sprite.AddFrame();
-            sprite.AddFrame();
-            sprite.AddFrame();
 
             drawEffect = new BasicEffect(GraphicsDevice)
             {
@@ -236,9 +231,33 @@ namespace VoxelSpriteEditor
 
             if (cks.IsKeyDown(Keys.Insert) && !lks.IsKeyDown(Keys.Insert)) sprite.InsertFrame();
             if (cks.IsKeyDown(Keys.Home) && !lks.IsKeyDown(Keys.Home)) sprite.CopyFrame();
-            if (cks.IsKeyDown(Keys.End) && !lks.IsKeyDown(Keys.End)) sprite.AddFrame();
+            if (cks.IsKeyDown(Keys.End) && !lks.IsKeyDown(Keys.End)) sprite.AddFrame(true);
             if (cks.IsKeyDown(Keys.Delete) && !lks.IsKeyDown(Keys.Delete)) sprite.DeleteFrame();
 
+            if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save(sprite, ref swatches);
+            if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load(ref sprite, GraphicsDevice, ref swatches);
+
+            if (cks.IsKeyDown(Keys.D1)) { selectedSwatch = 0; selectedColor = swatches[0]; }
+            if (cks.IsKeyDown(Keys.D2)) { selectedSwatch = 1; selectedColor = swatches[1]; }
+            if (cks.IsKeyDown(Keys.D3)) { selectedSwatch = 2; selectedColor = swatches[2]; }
+            if (cks.IsKeyDown(Keys.D4)) { selectedSwatch = 3; selectedColor = swatches[3]; }
+            if (cks.IsKeyDown(Keys.D5)) { selectedSwatch = 4; selectedColor = swatches[4]; }
+            if (cks.IsKeyDown(Keys.D6)) { selectedSwatch = 5; selectedColor = swatches[5]; }
+            if (cks.IsKeyDown(Keys.D7)) { selectedSwatch = 6; selectedColor = swatches[6]; }
+            if (cks.IsKeyDown(Keys.D8)) { selectedSwatch = 7; selectedColor = swatches[7]; }
+            if (cks.IsKeyDown(Keys.D9)) { selectedSwatch = 8; selectedColor = swatches[8]; }
+            if (cks.IsKeyDown(Keys.D0)) { selectedSwatch = 9; selectedColor = swatches[9]; }
+
+            if (cks.IsKeyDown(Keys.F12) && !lks.IsKeyDown(Keys.F12))
+            {
+                if(sprite.X_SIZE<16)
+                    sprite = new VoxelSprite(sprite.X_SIZE + 1, sprite.Y_SIZE + 1, sprite.Z_SIZE + 1, GraphicsDevice);
+            }
+            if (cks.IsKeyDown(Keys.F11) && !lks.IsKeyDown(Keys.F11))
+            {
+                if (sprite.X_SIZE > 3)
+                    sprite = new VoxelSprite(sprite.X_SIZE - 1, sprite.Y_SIZE - 1, sprite.Z_SIZE - 1, GraphicsDevice);
+            }
 
             if (wheelDelta != 0)
             {
@@ -407,8 +426,8 @@ namespace VoxelSpriteEditor
             for (int i = 0; i < 10; i++)
             {
                 spriteBatch.Draw(texList["square"], swatchRects[i], swatches[i]);
-                spriteBatch.DrawString(font, (i<9?i + 1:0).ToString(), new Vector2(swatchRects[i].X + 3, swatchRects[i].Y) + Vector2.One, Color.Black);
-                spriteBatch.DrawString(font, (i < 9 ? i + 1 : 0).ToString(), new Vector2(swatchRects[i].X + 3, swatchRects[i].Y), Color.White);
+                spriteBatch.DrawString(font, (i<9?i + 1:0).ToString() + (selectedSwatch==i?" > ":""), new Vector2(swatchRects[i].X + 3, swatchRects[i].Y) + Vector2.One, Color.Black);
+                spriteBatch.DrawString(font, (i < 9 ? i + 1 : 0).ToString() + (selectedSwatch == i ? " > " : ""), new Vector2(swatchRects[i].X + 3, swatchRects[i].Y), Color.White);
             }
 
             spriteBatch.Draw(texList["colors"], paintPos, null, Color.White, 0f, new Vector2(texList["colors"].Width, texList["colors"].Height) / 2, 1f, SpriteEffects.None, 1);

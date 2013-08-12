@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using System.Windows.Forms;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace VoxelLandscapeEditor
+namespace VoxelSpriteEditor
 {
     public static class LoadSave
     {
-        public static void Save(World gameWorld)
+        public static void Save(VoxelSprite sprite, ref Color[] swatches)
         {
             //StringBuilder sb = new StringBuilder();
 
@@ -22,7 +23,7 @@ namespace VoxelLandscapeEditor
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.AddExtension = true;
             sfd.DefaultExt = ".vxl";
-            sfd.Filter = "Voxel Landscape|*.vxl";
+            sfd.Filter = "Voxel Sprite|*.vxs";
             DialogResult dr = sfd.ShowDialog();
 
             if (string.IsNullOrEmpty(sfd.FileName) || dr != DialogResult.OK) return;
@@ -34,49 +35,47 @@ namespace VoxelLandscapeEditor
                 using (GZipStream gzstr = new GZipStream(str, CompressionMode.Compress))
                 {
 
-                    gzstr.WriteByte(Convert.ToByte(gameWorld.X_CHUNKS));
-                    gzstr.WriteByte(Convert.ToByte(gameWorld.Y_CHUNKS));
-                    gzstr.WriteByte(Convert.ToByte(gameWorld.Z_CHUNKS));
+                    gzstr.WriteByte(Convert.ToByte(sprite.X_SIZE));
+                    gzstr.WriteByte(Convert.ToByte(sprite.Y_SIZE));
+                    gzstr.WriteByte(Convert.ToByte(sprite.Z_SIZE));
+                    gzstr.WriteByte(Convert.ToByte(sprite.AnimChunks.Count));
 
-                    for (int z = 0; z < gameWorld.Z_CHUNKS; z++)
+                    for (int i = 0; i < 10; i++)
                     {
-                        for (int y = 0; y < gameWorld.Y_CHUNKS; y++)
-                        {
-                            for (int x = 0; x < gameWorld.X_CHUNKS; x++)
-                            {
-                                //str.Write("C\n");
-
-                                Chunk c = gameWorld.Chunks[x, y, z];
-                                for (int vx = 0; vx < Chunk.X_SIZE; vx++)
-                                    for (int vy = 0; vy < Chunk.Y_SIZE; vy++)
-                                        for (int vz = 0; vz < Chunk.Z_SIZE; vz++)
-                                        {
-                                            if (!c.Voxels[vx, vy, vz].Active) continue;
-
-                                            //string vox = vx + "," + vy + "," + vz + ",";
-                                            //vox += ((int)c.Voxels[vx, vy, vz].Type);
-                                            //str.Write(vox + "\n");
-
-                                            gzstr.WriteByte(Convert.ToByte(vx));
-                                            gzstr.WriteByte(Convert.ToByte(vy));
-                                            gzstr.WriteByte(Convert.ToByte(vz));
-                                            gzstr.WriteByte(Convert.ToByte(c.Voxels[vx, vy, vz].Type));
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].TR);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].TG);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].TB);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].SR);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].SG);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].SB);
-                                        }
-                                gzstr.WriteByte(Convert.ToByte('c'));
-                            }
-                        }
-
+                        gzstr.WriteByte(swatches[i].R);
+                        gzstr.WriteByte(swatches[i].G);
+                        gzstr.WriteByte(swatches[i].B);
                     }
 
-                }
-                //str.Flush();
+                    foreach (AnimChunk c in sprite.AnimChunks)
+                    {
+                        //str.Write("C\n");
 
+                        //Chunk c = gameWorld.Chunks[x, y, z];
+                        for (int vx = 0; vx < sprite.X_SIZE; vx++)
+                            for (int vy = 0; vy < sprite.Y_SIZE; vy++)
+                                for (int vz = 0; vz < sprite.Z_SIZE; vz++)
+                                {
+                                    if (!c.Voxels[vx, vy, vz].Active) continue;
+
+                                    //string vox = vx + "," + vy + "," + vz + ",";
+                                    //vox += ((int)c.Voxels[vx, vy, vz].Type);
+                                    //str.Write(vox + "\n");
+
+                                    gzstr.WriteByte(Convert.ToByte(vx));
+                                    gzstr.WriteByte(Convert.ToByte(vy));
+                                    gzstr.WriteByte(Convert.ToByte(vz));
+                                    gzstr.WriteByte(c.Voxels[vx, vy, vz].Color.R);
+                                    gzstr.WriteByte(c.Voxels[vx, vy, vz].Color.G);
+                                    gzstr.WriteByte(c.Voxels[vx, vy, vz].Color.B);
+                                }
+                        gzstr.WriteByte(Convert.ToByte('c'));
+
+
+                    }
+                    //str.Flush();
+
+                }
             }
             //}
 
@@ -92,9 +91,9 @@ namespace VoxelLandscapeEditor
             GC.Collect();
         }
 
-      
 
-        public static void Load(ref World gameWorld)
+
+        public static void Load(ref VoxelSprite sprite, GraphicsDevice gd, ref Color[] swatches)
         {
             //string fileString = "";
 
@@ -106,7 +105,7 @@ namespace VoxelLandscapeEditor
             //fileString = Decompress(fileString);
 
             //string[] fileSplit = fileString.Split('\n');
-            
+
             //int cl = 0;
 
             //string line;
@@ -118,8 +117,8 @@ namespace VoxelLandscapeEditor
             //cl+=2;
             OpenFileDialog sfd = new OpenFileDialog();
             sfd.AddExtension = true;
-            sfd.DefaultExt = ".vxl";
-            sfd.Filter = "Voxel Landscape|*.vxl";
+            sfd.DefaultExt = ".vxs";
+            sfd.Filter = "Voxel Sprite|*.vxs";
             DialogResult dr = sfd.ShowDialog();
 
             if (string.IsNullOrEmpty(sfd.FileName) || dr != DialogResult.OK) return;
@@ -131,7 +130,7 @@ namespace VoxelLandscapeEditor
             {
                 byte[] lb = new byte[4];
                 gstr.Position = gstr.Length - 4;
-                gstr.Read(lb, 0,4);
+                gstr.Read(lb, 0, 4);
                 int msgLength = BitConverter.ToInt32(lb, 0);
 
                 buffer = new byte[msgLength];
@@ -140,7 +139,7 @@ namespace VoxelLandscapeEditor
 
                 using (GZipStream str = new GZipStream(gstr, CompressionMode.Decompress))
                 {
-                    
+
                     str.Read(buffer, 0, msgLength);
                 }
             }
@@ -150,65 +149,52 @@ namespace VoxelLandscapeEditor
             int xs = buffer[0];
             int ys = buffer[1];
             int zs = buffer[2];
-            gameWorld = new World(xs, ys, zs, false);
+            int frames = buffer[3];
+            sprite = new VoxelSprite(xs, ys, zs, gd);
+            sprite.AnimChunks.Clear();
+            sprite.ChunkRTs.Clear();
 
-            pos = 3;
+            pos = 4;
 
-            for (int z = 0; z < gameWorld.Z_CHUNKS; z++)
+            for (int i = 0; i < 10; i++)
             {
-                for (int y = 0; y < gameWorld.Y_CHUNKS; y++)
-                {
-                    for (int x = 0; x < gameWorld.X_CHUNKS; x++)
-                    {
-                        Chunk c = gameWorld.Chunks[x, y, z];
-
-                        while (pos < buffer.Length)
-                        {
-                            if (Convert.ToChar(buffer[pos]) != 'c')
-                            {
-                                //str.Seek(-1, SeekOrigin.Current);
-                                //str.Read(ba, 0, 10);
-                                int vx = buffer[pos];
-                                int vy = buffer[pos + 1];
-                                int vz = buffer[pos + 2];
-                                VoxelType type = (VoxelType)buffer[pos + 3];
-                                Color top = new Color(buffer[pos + 4], buffer[pos + 5], buffer[pos + 6]);
-                                Color side = new Color(buffer[pos + 7], buffer[pos + 8], buffer[pos + 9]);
-
-                                c.SetVoxel(vx, vy, vz, true, type, top, side);
-                                pos += 10;
-                            }
-                            else
-                            {
-                                pos++;
-                                break;
-                            }
-
-                        }
-
-                        //while (cl<fileSplit.Length)
-                        //{
-                        //    line = fileSplit[cl];
-                        //    if (line == "C") break;
-                        //    if (line == "") break;
-
-                        //    split = line.Split(',');
-
-                        //    c.SetVoxel(Convert.ToInt16(split[0]), Convert.ToInt16(split[1]), Convert.ToInt16(split[2]), true, (VoxelType)(Convert.ToInt16(split[3])), GetTopColor((VoxelType)(Convert.ToInt16(split[3]))), GetSideColor((VoxelType)(Convert.ToInt16(split[3]))));
-
-                        //    cl++;
-                        //}
-
-                        //cl++;
-                    }
-                }
-
+                swatches[i] = new Color(buffer[pos], buffer[pos+1],buffer[pos+2]);
+                pos += 3;
             }
 
-            //fileSplit = null;
-            //fileString = null;
 
-            gameWorld.UpdateWorldMeshes();
+            for(int frame = 0;frame<frames;frame++)
+            {
+                sprite.AddFrame(false);
+
+                AnimChunk c = sprite.AnimChunks[frame];
+
+                while (pos < buffer.Length)
+                {
+                    if (Convert.ToChar(buffer[pos]) != 'c')
+                    {
+                        //str.Seek(-1, SeekOrigin.Current);
+                        //str.Read(ba, 0, 10);
+                        int vx = buffer[pos];
+                        int vy = buffer[pos + 1];
+                        int vz = buffer[pos + 2];
+                        Color top = new Color(buffer[pos + 3], buffer[pos + 4], buffer[pos + 5]);
+
+                        c.SetVoxel(vx, vy, vz, true, top);
+                        pos += 6;
+
+                    }
+                    else
+                    {
+                        pos++;
+                        break;
+                    }
+
+                }
+
+                c.UpdateMesh();
+                
+            }
 
             GC.Collect();
 
@@ -234,7 +220,7 @@ namespace VoxelLandscapeEditor
             System.Buffer.BlockCopy(compressed, 0, gzBuffer, 4, compressed.Length);
             System.Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gzBuffer, 0, 4);
 
-            return Convert.ToBase64String (gzBuffer);
+            return Convert.ToBase64String(gzBuffer);
         }
 
         public static string Decompress(string compressedText)
@@ -256,7 +242,7 @@ namespace VoxelLandscapeEditor
                 }
 
                 return Encoding.UTF8.GetString(buffer);
-            } 
+            }
         }
 
 
@@ -289,6 +275,6 @@ namespace VoxelLandscapeEditor
 
             return Color.White;
         }
-        
+
     }
 }

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelLandscapeEditorContent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelSpriteEditor", "VoxelSpriteEditor\VoxelSpriteEditor\VoxelSpriteEditor.csproj", "{0FA1F268-CAA3-427B-9C05-747226076624}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "VoxelSpriteEditorContent", "VoxelSpriteEditor\VoxelSpriteEditorContent\VoxelSpriteEditorContent.contentproj", "{BF797D60-7384-48DA-9F61-B8605B19518F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelSpriteEditorContent", "VoxelSpriteEditor\VoxelSpriteEditorContent\VoxelSpriteEditorContent.contentproj", "{BF797D60-7384-48DA-9F61-B8605B19518F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,8 +30,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

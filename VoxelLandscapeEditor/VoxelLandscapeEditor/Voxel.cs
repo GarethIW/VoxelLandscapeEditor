@@ -20,17 +20,29 @@ namespace VoxelLandscapeEditor
         public const float HALF_SIZE = SIZE / 2f;
 
         public bool Active;// = false;
-        public Color TopColor;// = Color.White;
-        public Color SideColor;// = Color.Gray;
+
+        public byte TR;
+        public byte TG;
+        public byte TB;
+        public byte SR;
+        public byte SG;
+        public byte SB;
+        
+        public short Destructable;
 
         public VoxelType Type;
 
-        public Voxel(bool active, VoxelType type, Color top, Color side)
+        public Voxel(bool active, VoxelType type, byte tr, byte tg, byte tb, byte sr,byte sg,byte sb, short destruct)
         {
             Active = active;
             Type = type;
-            TopColor = top;
-            SideColor = side;
+            TR = tr;
+            TG = tg;
+            TB = tb;
+            SR = sr;
+            SG = sg;
+            SB = sb;
+            Destructable = destruct;
         }
     }
 }

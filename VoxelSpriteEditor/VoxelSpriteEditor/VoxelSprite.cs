@@ -36,9 +36,9 @@ namespace VoxelSpriteEditor
             ChunkRTs.Add(new RenderTarget2D(gd,200,150,false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8));
         }
 
-        public void AddFrame()
+        public void AddFrame(bool guides)
         {
-            AnimChunks.Add(new AnimChunk(X_SIZE, Y_SIZE, Z_SIZE, true));
+            AnimChunks.Add(new AnimChunk(X_SIZE, Y_SIZE, Z_SIZE, guides));
             ChunkRTs.Add(new RenderTarget2D(graphicsDevice, 200, 150, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8));
         }
 
