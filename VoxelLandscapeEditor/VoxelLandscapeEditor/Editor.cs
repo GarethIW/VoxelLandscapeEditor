@@ -138,7 +138,23 @@ namespace VoxelLandscapeEditor
 
             if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save(gameWorld);
             if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load(ref gameWorld);
-            
+
+            if (cks.IsKeyDown(Keys.F12) && !lks.IsKeyDown(Keys.F12))
+            {
+                if (gameWorld.X_CHUNKS < 20)
+                {
+                    gameWorld.X_CHUNKS ++;
+                    gameWorld.Y_CHUNKS ++;
+                }
+            }
+            if (cks.IsKeyDown(Keys.F11) && !lks.IsKeyDown(Keys.F11))
+            {
+                if (gameWorld.X_CHUNKS > 5)
+                {
+                    gameWorld.X_CHUNKS--;
+                    gameWorld.Y_CHUNKS--;
+                }
+            }
 
             if (wheelDelta != 0)
             {

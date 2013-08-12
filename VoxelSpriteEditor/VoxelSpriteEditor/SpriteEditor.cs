@@ -58,6 +58,9 @@ namespace VoxelSpriteEditor
 
         Dictionary<string, Texture2D> texList = new Dictionary<string, Texture2D>();
 
+        double animTime = 0;
+        bool playingAnim = false;
+
         public SpriteEditor()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -229,6 +232,13 @@ namespace VoxelSpriteEditor
                 if (sprite.CurrentFrame >= sprite.AnimChunks.Count) sprite.CurrentFrame = 0;
             }
 
+            if (cks.IsKeyDown(Keys.NumPad5) && !lks.IsKeyDown(Keys.NumPad5))
+            {
+                playingAnim = !playingAnim;
+                animTime = 0;
+
+            }
+
             if (cks.IsKeyDown(Keys.Insert) && !lks.IsKeyDown(Keys.Insert)) sprite.InsertFrame();
             if (cks.IsKeyDown(Keys.Home) && !lks.IsKeyDown(Keys.Home)) sprite.CopyFrame();
             if (cks.IsKeyDown(Keys.End) && !lks.IsKeyDown(Keys.End)) sprite.AddFrame(true);
@@ -282,20 +292,26 @@ namespace VoxelSpriteEditor
                     viewYaw += mousedelta.X * 0.01f;
                 }
 
+                Color prevColor = selectedColor;
                 if (redRect.Contains(mp))
                 {
                     selectedColor.R = (byte)MathHelper.Clamp(((256f / 400f) * ((mp.X - (float)redRect.Left))), 0f, 255f);
                     swatches[selectedSwatch] = selectedColor;
+                    if (cks.IsKeyDown(Keys.LeftShift)) sprite.ReplaceColor(prevColor, selectedColor);
                 }
                 if (greenRect.Contains(mp))
                 {
                     selectedColor.G = (byte)MathHelper.Clamp(((256f / 400f) * ((mp.X - (float)greenRect.Left))), 0f, 255f);
                     swatches[selectedSwatch] = selectedColor;
+                    if (cks.IsKeyDown(Keys.LeftShift)) sprite.ReplaceColor(prevColor, selectedColor);
+
                 }
                 if (blueRect.Contains(mp))
                 {
                     selectedColor.B = (byte)MathHelper.Clamp(((256f / 400f) * ((mp.X - (float)blueRect.Left))), 0f, 255f);
                     swatches[selectedSwatch] = selectedColor;
+                    if (cks.IsKeyDown(Keys.LeftShift)) sprite.ReplaceColor(prevColor, selectedColor);
+
                 }
 
                 if (lms.LeftButton != ButtonState.Pressed)
@@ -330,6 +346,17 @@ namespace VoxelSpriteEditor
 
             lks = cks;
             lms = cms;
+
+            if (playingAnim)
+            {
+                animTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (animTime > 100)
+                {
+                    animTime = 0;
+                    sprite.CurrentFrame++;
+                    if (sprite.CurrentFrame > sprite.AnimChunks.Count - 1) sprite.CurrentFrame = 0;
+                }
+            }
 
             drawEffect.World = worldMatrix * Matrix.CreateRotationY(viewYaw) * Matrix.CreateRotationX(viewPitch);
             drawEffect.View = Matrix.CreateLookAt(new Vector3(0, 0, viewZoom), new Vector3(0, 0, 0), Vector3.Up);

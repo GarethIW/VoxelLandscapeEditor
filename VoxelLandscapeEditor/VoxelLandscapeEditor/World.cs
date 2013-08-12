@@ -132,7 +132,7 @@ namespace VoxelLandscapeEditor
 
         internal void MakeTree(int x, int y, int z)
         {
-            int height = 3 + Helper.Random.Next(7);
+            int height = 3 + Helper.Random.Next(10);
             for (int h = z; h > z - height; h--)
             {
                 SetVoxel(x, y, h, true, VoxelType.Tree, new Color(0.4f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f), new Color(0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f));

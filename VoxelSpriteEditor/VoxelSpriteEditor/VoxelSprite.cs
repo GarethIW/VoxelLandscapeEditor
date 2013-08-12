@@ -74,5 +74,28 @@ namespace VoxelSpriteEditor
                         AnimChunks[AnimChunks.Count - 1].SetVoxel(x, y, z, AnimChunks[CurrentFrame].Voxels[x, y, z].Active, AnimChunks[CurrentFrame].Voxels[x, y, z].Color);
             AnimChunks[AnimChunks.Count - 1].UpdateMesh();
         }
+
+        internal void ReplaceColor(Microsoft.Xna.Framework.Color prevColor, Microsoft.Xna.Framework.Color selectedColor)
+        {
+            foreach (AnimChunk c in AnimChunks)
+            {
+                
+                for (int y = 0; y < Y_SIZE; y++)
+                    for (int x = 0; x < X_SIZE; x++)
+                    {
+                        for (int z = 0; z < Z_SIZE ;z++)
+                        {
+                            if (c.Voxels[x, y, z].Color.R >= prevColor.R - 5 && c.Voxels[x, y, z].Color.R <= prevColor.R +5 &&
+                                c.Voxels[x, y, z].Color.G >= prevColor.G - 5 && c.Voxels[x, y, z].Color.G <= prevColor.G + 5 &&
+                                c.Voxels[x, y, z].Color.B >= prevColor.B - 5 && c.Voxels[x, y, z].Color.B <= prevColor.B +5)
+                            {
+                                c.Voxels[x,y,z].Color = selectedColor;
+                            }
+                        }
+                    }
+
+                c.UpdateMesh();
+            }
+        }
     }
 }
