@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.IO;
 
 namespace VoxelLandscapeEditor
 {
@@ -32,7 +33,11 @@ namespace VoxelLandscapeEditor
 
         Cursor cursor;
 
+        List<PrefabChunk> Prefabs = new List<PrefabChunk>();
+
         double brushTime = 0;
+
+        int selectedPrefab = 0;
 
         public Editor()
         {
@@ -70,7 +75,12 @@ namespace VoxelLandscapeEditor
             gameCamera = new Camera(GraphicsDevice, GraphicsDevice.Viewport);
             cursor = new Cursor();
 
-            
+            List<string> pfs = new List<String>(Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "prefabs/")));
+
+            foreach (string fn in pfs)
+            {
+                Prefabs.Add(LoadSave.LoadPrefab(fn));
+            }
 
             drawEffect = new BasicEffect(GraphicsDevice)
             {
@@ -132,8 +142,18 @@ namespace VoxelLandscapeEditor
             gameCamera.AddToPosition(moveVector);
             //gameCamera.Rotate(mousedelta.X, mousedelta.Y);
 
-            if (cks.IsKeyDown(Keys.PageUp) && !lks.IsKeyDown(Keys.PageUp)) cursor.Height++;
-            if (cks.IsKeyDown(Keys.PageDown) && !lks.IsKeyDown(Keys.PageDown)) cursor.Height--;
+            if (cks.IsKeyDown(Keys.PageUp) && !lks.IsKeyDown(Keys.PageUp))
+            {
+                if(cursor.Mode == CursorMode.LandScape) cursor.Height++;
+                if (cursor.Mode == CursorMode.Prefab) cursor.destructable++;
+
+            }
+            if (cks.IsKeyDown(Keys.PageDown) && !lks.IsKeyDown(Keys.PageDown))
+            {
+                if (cursor.Mode == CursorMode.LandScape) cursor.Height--;
+                if (cursor.Mode == CursorMode.Prefab) cursor.destructable--;
+
+            }
             if (cks.IsKeyDown(Keys.Tab) && !lks.IsKeyDown(Keys.Tab)) cursor.Mode++;
 
             if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save(gameWorld);
@@ -158,23 +178,44 @@ namespace VoxelLandscapeEditor
 
             if (wheelDelta != 0)
             {
-                if (wheelDelta > 0)
+                if (cursor.Mode != CursorMode.Prefab)
                 {
-                    if (cks.IsKeyDown(Keys.LeftShift)) cursor.Height++;
-                    else cursor.Size += 2;
-                    cursor.UpdateMesh();
+                    if (wheelDelta > 0)
+                    {
+                        if (cks.IsKeyDown(Keys.LeftShift)) cursor.Height++;
+                        else cursor.Size += 2;
+                        cursor.UpdateMesh();
+                    }
+                    else
+                    {
+                        if (cks.IsKeyDown(Keys.LeftShift)) cursor.Height--;
+                        else cursor.Size -= 2;
+                        cursor.UpdateMesh();
+                    }
                 }
                 else
                 {
-                    if (cks.IsKeyDown(Keys.LeftShift)) cursor.Height--;
-                    else cursor.Size -= 2;
-                    cursor.UpdateMesh();
+                    if (wheelDelta > 0)
+                    {
+                        selectedPrefab++;
+                        if (selectedPrefab >= Prefabs.Count) selectedPrefab = 0;
+                    }
+                    else
+                    {
+                        selectedPrefab--;
+                        if (selectedPrefab < 0) selectedPrefab = Prefabs.Count - 1;
+                    }
                 }
+            }
+
+            if (cms.RightButton == ButtonState.Pressed && lms.RightButton != ButtonState.Pressed)
+            {
+                Prefabs[selectedPrefab].Rotate();
             }
 
             if (cms.LeftButton == ButtonState.Pressed)
             {
-                if (brushTime == 0) cursor.PerformAction(gameWorld);
+                if (brushTime == 0) cursor.PerformAction(gameWorld, Prefabs[selectedPrefab]);
 
                 brushTime += gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (brushTime > 50) brushTime = 0;
@@ -261,19 +302,47 @@ namespace VoxelLandscapeEditor
                 }
             }
 
-            
-            foreach (EffectPass pass in cursorEffect.CurrentTechnique.Passes)
+
+            if (cursor.Mode != CursorMode.Prefab)
             {
-                pass.Apply();
+                cursorEffect.Alpha = 1f;
+                foreach (EffectPass pass in cursorEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
 
-                if(cursor.VertexArray!=null)
-                    GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, cursor.VertexArray, 0, cursor.VertexArray.Length, cursor.IndexArray, 0, cursor.VertexArray.Length / 2);
+                    if (cursor.VertexArray != null)
+                        GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, cursor.VertexArray, 0, cursor.VertexArray.Length, cursor.IndexArray, 0, cursor.VertexArray.Length / 2);
 
+                }
+            }
+            else
+            {
+                if (Prefabs.Count > 0)
+                {
+                    cursorEffect.Alpha = 0.5f;
+                    foreach (EffectPass pass in cursorEffect.CurrentTechnique.Passes)
+                    {
+                        pass.Apply();
+
+                        PrefabChunk c = Prefabs[selectedPrefab];
+
+                        if (c.VertexArray != null)
+                            GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, c.VertexArray, 0, c.VertexArray.Length, c.IndexArray, 0, c.VertexArray.Length / 2);
+
+                    }
+                }
             }
 
             spriteBatch.Begin();
             spriteBatch.DrawString(font, cursor.Mode.ToString(), Vector2.One * 20, Color.White);
-            spriteBatch.DrawString(font, "Brush height: " + cursor.Height, new Vector2(20, 40), Color.White);
+            if (cursor.Mode == CursorMode.LandScape)
+            {
+                spriteBatch.DrawString(font, "Brush height: " + cursor.Height, new Vector2(20, 40), Color.White);
+            }
+            if (cursor.Mode == CursorMode.Prefab)
+            {
+                spriteBatch.DrawString(font, "Destructable level: " + cursor.destructable, new Vector2(20, 40), Color.White);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);

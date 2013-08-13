@@ -61,6 +61,7 @@ namespace VoxelLandscapeEditor
                                             gzstr.WriteByte(Convert.ToByte(vy));
                                             gzstr.WriteByte(Convert.ToByte(vz));
                                             gzstr.WriteByte(Convert.ToByte(c.Voxels[vx, vy, vz].Type));
+                                            gzstr.WriteByte(Convert.ToByte(c.Voxels[vx, vy, vz].Destructable));
                                             gzstr.WriteByte(c.Voxels[vx, vy, vz].TR);
                                             gzstr.WriteByte(c.Voxels[vx, vy, vz].TG);
                                             gzstr.WriteByte(c.Voxels[vx, vy, vz].TB);
@@ -172,11 +173,12 @@ namespace VoxelLandscapeEditor
                                 int vy = buffer[pos + 1];
                                 int vz = buffer[pos + 2];
                                 VoxelType type = (VoxelType)buffer[pos + 3];
-                                Color top = new Color(buffer[pos + 4], buffer[pos + 5], buffer[pos + 6]);
-                                Color side = new Color(buffer[pos + 7], buffer[pos + 8], buffer[pos + 9]);
+                                short destruct = buffer[pos + 4];
+                                Color top = new Color(buffer[pos + 5], buffer[pos + 6], buffer[pos + 7]);
+                                Color side = new Color(buffer[pos + 8], buffer[pos + 9], buffer[pos + 10]);
 
-                                c.SetVoxel(vx, vy, vz, true, type, top, side);
-                                pos += 10;
+                                c.SetVoxel(vx, vy, vz, true, destruct, type, top, side);
+                                pos += 11;
                             }
                             else
                             {
@@ -212,6 +214,73 @@ namespace VoxelLandscapeEditor
 
             GC.Collect();
 
+        }
+
+        public static PrefabChunk LoadPrefab(string fn)
+        {
+            PrefabChunk prefab;
+
+            byte[] buffer;
+
+            using (FileStream gstr = new FileStream(fn, FileMode.Open))
+            {
+                byte[] lb = new byte[4];
+                gstr.Position = gstr.Length - 4;
+                gstr.Read(lb, 0, 4);
+                int msgLength = BitConverter.ToInt32(lb, 0);
+
+                buffer = new byte[msgLength];
+
+                gstr.Position = 0;
+
+                using (GZipStream str = new GZipStream(gstr, CompressionMode.Decompress))
+                {
+
+                    str.Read(buffer, 0, msgLength);
+                }
+            }
+
+            int pos = 0;
+
+            int xs = buffer[0];
+            int ys = buffer[1];
+            int zs = buffer[2];
+            int frames = buffer[3];
+            prefab = new PrefabChunk(xs, ys, zs);
+
+            pos = 4;
+
+            for (int i = 0; i < 10; i++)
+            {
+                pos += 3;
+            }
+
+            while (pos < buffer.Length)
+            {
+                if (Convert.ToChar(buffer[pos]) != 'c')
+                {
+                    int vx = buffer[pos];
+                    int vy = buffer[pos + 1];
+                    int vz = buffer[pos + 2];
+                    Color top = new Color(buffer[pos + 3], buffer[pos + 4], buffer[pos + 5]);
+
+                    prefab.SetVoxel(vx, vz, vy, true, VoxelType.Prefab, top);
+                    pos += 6;
+
+                }
+                else
+                {
+                    pos++;
+                    break;
+                }
+
+            }
+
+            prefab.UpdateMesh();
+
+            GC.Collect();
+
+            return prefab;
         }
 
         public static string Compress(string text)

@@ -11,7 +11,8 @@ namespace VoxelLandscapeEditor
         Ground,
         Tree,
         Leaf,
-        Water
+        Water,
+        Prefab
     }
 
     public struct Voxel

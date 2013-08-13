@@ -10,7 +10,8 @@ namespace VoxelLandscapeEditor
     {
         LandScape,
         Trees,
-        Water
+        Water,
+        Prefab
     }
 
     public class Cursor
@@ -32,6 +33,8 @@ namespace VoxelLandscapeEditor
 
         public CursorMode Mode;
 
+        public short destructable = 0;
+
         public Cursor()
         {
             UpdateMesh();
@@ -42,7 +45,10 @@ namespace VoxelLandscapeEditor
             if (Height < 2) Height = 2;
             if (Height > 20) Height = 20;
 
-            if ((int)Mode > 2) Mode = 0;
+            if (destructable < 0) destructable = 0;
+            if (destructable > 2) destructable = 2;
+
+            if ((int)Mode > 3) Mode = 0;
         }
 
         public void UpdateMesh()
@@ -100,7 +106,7 @@ namespace VoxelLandscapeEditor
             Indexes.Clear();
         }
 
-        public void PerformAction(World gameWorld)
+        public void PerformAction(World gameWorld, PrefabChunk prefab)
         {
             // Need to make it so voxels have a type and then we can check if tree so we don't put trees on top of trees yo
 
@@ -116,7 +122,7 @@ namespace VoxelLandscapeEditor
                             Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
                             for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
                             {
-                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z>=Chunk.Z_SIZE-Height, VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
+                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z>=Chunk.Z_SIZE-Height, 0, VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
                             }
                         }
                     }
@@ -151,11 +157,30 @@ namespace VoxelLandscapeEditor
                             Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
                             for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
                             {
-                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z >= Chunk.Z_SIZE - (Height-2), VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
+                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z >= Chunk.Z_SIZE - (Height-2), 0, VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
                             }
-                            gameWorld.SetVoxel((int)pos.X, (int)pos.Y, (int)Position.Z , true, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
+                            gameWorld.SetVoxel((int)pos.X, (int)pos.Y, (int)Position.Z , true, 0, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
                         }
                     }
+                    break;
+                case CursorMode.Prefab:
+                    int startX = (int)Position.X - (prefab.X_SIZE/2);
+                    int startY = (int)Position.Y - (prefab.Y_SIZE/2);
+                    int startZ = (int)Position.Z - (prefab.Z_SIZE);
+                    for (int x = 0; x < prefab.X_SIZE; x++)
+                    {
+                        for (int y = 0; y < prefab.Y_SIZE; y++)
+                        {
+                            for (int z = 0; z < prefab.Z_SIZE; z++)
+                            {
+                                if (prefab.Voxels[x, y, z].Active)
+                                {
+                                    gameWorld.SetVoxel(startX + x, startY + y, startZ + z, true, destructable, VoxelType.Prefab, new Color(prefab.Voxels[x, y, z].TR, prefab.Voxels[x, y, z].TG, prefab.Voxels[x, y, z].TB), new Color(prefab.Voxels[x, y, z].SR, prefab.Voxels[x, y, z].SG, prefab.Voxels[x, y, z].SB));    
+                                }
+                            }
+                        }
+                    }
+
                     break;
             }
         }

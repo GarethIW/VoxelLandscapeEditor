@@ -45,18 +45,19 @@ namespace VoxelLandscapeEditor
                     {
                         for (int z = Chunk.Z_SIZE - 1; z >= Chunk.Z_SIZE - 5; z--)
                         {
-                            SetVoxel(x, y, z, true, VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
+                            SetVoxel(x, y, z, true, 0, VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
                         }
                     }
             }
         }
 
-        public void SetVoxel(int x, int y, int z, bool active, VoxelType type, Color top, Color side)
+        public void SetVoxel(int x, int y, int z, bool active, short destrutable, VoxelType type, Color top, Color side)
         {
             if (x < 0 || y < 0 || z < 0 || x >= X_SIZE || y >= Y_SIZE || z >= Z_SIZE) return;
 
             Voxels[x, y, z].Active = active;
             Voxels[x, y, z].Type = type;
+            Voxels[x, y, z].Destructable = destrutable;
             Voxels[x, y, z].TR = top.R;
             Voxels[x, y, z].TG = top.G;
             Voxels[x, y, z].TB = top.B;

@@ -92,13 +92,13 @@ namespace VoxelLandscapeEditor
             foreach (Chunk c in Chunks) if(c.Updated) c.UpdateMesh();
         }
 
-        public void SetVoxel(int x, int y, int z, bool active, VoxelType type, Color top, Color side)
+        public void SetVoxel(int x, int y, int z, bool active, short destructable, VoxelType type, Color top, Color side)
         {
             if (x < 0 || y < 0 || z < 0 || x >= X_SIZE || y >= Y_SIZE || z >= Z_SIZE) return;
 
             Chunk c = GetChunkAtWorldPosition(x, y, z);
 
-            c.SetVoxel(x - ((x / Chunk.X_SIZE) * Chunk.X_SIZE), y - ((y / Chunk.Y_SIZE) * Chunk.Y_SIZE), z - ((z / Chunk.Z_SIZE) * Chunk.Z_SIZE), active, type, top, side);
+            c.SetVoxel(x - ((x / Chunk.X_SIZE) * Chunk.X_SIZE), y - ((y / Chunk.Y_SIZE) * Chunk.Y_SIZE), z - ((z / Chunk.Z_SIZE) * Chunk.Z_SIZE), active, destructable, type, top, side);
 
             c.Updated = true;
         }
@@ -135,7 +135,7 @@ namespace VoxelLandscapeEditor
             int height = 3 + Helper.Random.Next(10);
             for (int h = z; h > z - height; h--)
             {
-                SetVoxel(x, y, h, true, VoxelType.Tree, new Color(0.4f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f), new Color(0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f));
+                SetVoxel(x, y, h, true, 0, VoxelType.Tree, new Color(0.4f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f), new Color(0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f));
 
                 if (h < z - 4)
                 {
@@ -146,14 +146,14 @@ namespace VoxelLandscapeEditor
                             if (xx == x && yy == y) continue;
                             if (Helper.Random.Next(2) == 0)
                             {
-                                SetVoxel(xx, yy, h, true, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
+                                SetVoxel(xx, yy, h, true, 0, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
                             }
                         }
                     }
                 }
             }
 
-            SetVoxel(x, y, z - (height), true, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
+            SetVoxel(x, y, z - (height), true, 0, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
            
         }
     }

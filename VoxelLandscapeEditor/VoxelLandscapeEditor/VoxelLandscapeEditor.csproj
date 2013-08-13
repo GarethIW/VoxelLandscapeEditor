@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Camera.cs" />
     <Compile Include="Chunk.cs" />
+    <Compile Include="PrefabChunk.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="FrameCounter.cs" />
     <Compile Include="Helper.cs" />
