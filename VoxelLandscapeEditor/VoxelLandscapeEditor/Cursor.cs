@@ -43,7 +43,7 @@ namespace VoxelLandscapeEditor
         public void Update(GameTime gameTime)
         {
             if (Height < 2) Height = 2;
-            if (Height > 20) Height = 20;
+            if (Height > 25) Height = 25;
 
             if (destructable < 0) destructable = 0;
             if (destructable > 2) destructable = 2;
@@ -72,6 +72,7 @@ namespace VoxelLandscapeEditor
             Vector3 meshCenter = (new Vector3(X_SIZE, Y_SIZE, Z_SIZE) * Voxel.SIZE) / 2f;
             Vertices.Clear();
             Indexes.Clear();
+
 
             for(int x=0;x<X_SIZE;x++)
                 for(int y=0;y<Y_SIZE;y++)
@@ -168,7 +169,7 @@ namespace VoxelLandscapeEditor
                 case CursorMode.Prefab:
                     int startX = (int)Position.X - (prefab.X_SIZE/2);
                     int startY = (int)Position.Y - (prefab.Y_SIZE/2);
-                    int startZ = (int)Position.Z - (prefab.Z_SIZE);
+                    int startZ = (Chunk.Z_SIZE - Height) - (prefab.Z_SIZE);
                     for (int x = 0; x < prefab.X_SIZE; x++)
                     {
                         for (int y = 0; y < prefab.Y_SIZE; y++)

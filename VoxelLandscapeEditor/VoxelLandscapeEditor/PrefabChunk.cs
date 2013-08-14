@@ -61,7 +61,7 @@ namespace VoxelLandscapeEditor
 
         public void UpdateMesh()
         {
-            Vector3 meshCenter = new Vector3(X_SIZE * Voxel.HALF_SIZE, Y_SIZE * Voxel.HALF_SIZE, Z_SIZE*Voxel.SIZE);
+            Vector3 meshCenter = new Vector3(X_SIZE * Voxel.HALF_SIZE, Y_SIZE * Voxel.HALF_SIZE, Z_SIZE*Voxel.SIZE) - new Vector3(Voxel.HALF_SIZE,Voxel.HALF_SIZE,0f);
             Vertices.Clear();
             Indexes.Clear();
 
