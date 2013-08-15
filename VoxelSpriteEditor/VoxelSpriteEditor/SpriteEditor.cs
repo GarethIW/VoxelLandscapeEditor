@@ -35,6 +35,8 @@ namespace VoxelSpriteEditor
 
         Cursor cursor = new Cursor();
 
+        AnimChunk clipBoard = new AnimChunk(32, 32, 32, false);
+
         Vector2 paintPos;
         Rectangle redRect;
         Rectangle greenRect;
@@ -193,30 +195,82 @@ namespace VoxelSpriteEditor
 
             Vector3 moveVector = new Vector3(0, 0, 0);
             if (cks.IsKeyDown(Keys.Up) && !lks.IsKeyDown(Keys.Up))
+            {
                 moveVector += new Vector3(0, -1, 0);
+                
+            }
             if (cks.IsKeyDown(Keys.Down) && !lks.IsKeyDown(Keys.Down))
+            {
                 moveVector += new Vector3(0, 1, 0);
+            }
             if (cks.IsKeyDown(Keys.Right) && !lks.IsKeyDown(Keys.Right))
+            {
                 moveVector += new Vector3(1, 0, 0);
+            }
             if (cks.IsKeyDown(Keys.Left) && !lks.IsKeyDown(Keys.Left))
+            {
                 moveVector += new Vector3(-1, 0, 0);
+            }
             if (cks.IsKeyDown(Keys.PageDown) && !lks.IsKeyDown(Keys.PageDown))
+            {
                 moveVector += new Vector3(0, 0, -1);
+            }
             if (cks.IsKeyDown(Keys.PageUp) && !lks.IsKeyDown(Keys.PageUp))
-                moveVector += new Vector3(0, 0,1);
-            cursor.Position += moveVector;
+            {
+                moveVector += new Vector3(0, 0, 1);
+            }
+            if (cks.IsKeyDown(Keys.LeftShift)) cursor.ChangeSize(moveVector, currentChunk.X_SIZE);
+            if(!cks.IsKeyDown(Keys.LeftShift)) cursor.Position += moveVector;
 
-            cursor.Position = Vector3.Clamp(cursor.Position, Vector3.Zero, Vector3.One * (currentChunk.X_SIZE-1));
+            cursor.Position = Vector3.Clamp(cursor.Position, Vector3.Zero, (Vector3.One * (currentChunk.X_SIZE)) - (cursor.Size));
 
             if (cks.IsKeyDown(Keys.Space) && !lks.IsKeyDown(Keys.Space))
             {
-                currentChunk.SetVoxel((int)cursor.Position.X, (int)cursor.Position.Y, (int)cursor.Position.Z, true, selectedColor);
+                for (int x = (int)cursor.Position.X; x < (int)cursor.Position.X + (int)cursor.Size.X; x++)
+                    for (int y = (int)cursor.Position.Y; y < (int)cursor.Position.Y + (int)cursor.Size.Y; y++)
+                        for (int z = (int)cursor.Position.Z; z < (int)cursor.Position.Z + (int)cursor.Size.Z; z++)
+                            currentChunk.SetVoxel(x, y, z, true, selectedColor);
                 currentChunk.UpdateMesh();
             }
 
             if (cks.IsKeyDown(Keys.Tab) && !lks.IsKeyDown(Keys.Tab))
             {
-                currentChunk.SetVoxel((int)cursor.Position.X, (int)cursor.Position.Y, (int)cursor.Position.Z, false, currentChunk.Voxels[(int)cursor.Position.X, (int)cursor.Position.Y, (int)cursor.Position.Z].Color);
+                for(int x=(int)cursor.Position.X;x<(int)cursor.Position.X + (int)cursor.Size.X;x++)
+                    for (int y = (int)cursor.Position.Y; y < (int)cursor.Position.Y + (int)cursor.Size.Y; y++)
+                        for (int z = (int)cursor.Position.Z; z < (int)cursor.Position.Z + (int)cursor.Size.Z; z++)
+                            currentChunk.SetVoxel(x, y, z, false, currentChunk.Voxels[x, y, z].Color);
+                currentChunk.UpdateMesh();
+            }
+
+            if (cks.IsKeyDown(Keys.LeftControl) && (cks.IsKeyDown(Keys.C) && !lks.IsKeyDown(Keys.C)))
+            {
+                ClearClipboard();
+                for (int x = (int)cursor.Position.X; x < (int)cursor.Position.X + (int)cursor.Size.X; x++)
+                    for (int y = (int)cursor.Position.Y; y < (int)cursor.Position.Y + (int)cursor.Size.Y; y++)
+                        for (int z = (int)cursor.Position.Z; z < (int)cursor.Position.Z + (int)cursor.Size.Z; z++)
+                            clipBoard.SetVoxel(x - (int)cursor.Position.X, y - (int)cursor.Position.Y, z - (int)cursor.Position.Z, currentChunk.Voxels[x,y,z].Active, currentChunk.Voxels[x,y,z].Color);
+            }
+            if (cks.IsKeyDown(Keys.LeftControl) && (cks.IsKeyDown(Keys.X) && !lks.IsKeyDown(Keys.X)))
+            {
+                ClearClipboard();
+                for (int x = (int)cursor.Position.X; x < (int)cursor.Position.X + (int)cursor.Size.X; x++)
+                    for (int y = (int)cursor.Position.Y; y < (int)cursor.Position.Y + (int)cursor.Size.Y; y++)
+                        for (int z = (int)cursor.Position.Z; z < (int)cursor.Position.Z + (int)cursor.Size.Z; z++)
+                            clipBoard.SetVoxel(x - (int)cursor.Position.X, y - (int)cursor.Position.Y, z - (int)cursor.Position.Z, currentChunk.Voxels[x, y, z].Active, currentChunk.Voxels[x, y, z].Color);
+
+                for (int x = (int)cursor.Position.X; x < (int)cursor.Position.X + (int)cursor.Size.X; x++)
+                    for (int y = (int)cursor.Position.Y; y < (int)cursor.Position.Y + (int)cursor.Size.Y; y++)
+                        for (int z = (int)cursor.Position.Z; z < (int)cursor.Position.Z + (int)cursor.Size.Z; z++)
+                            currentChunk.SetVoxel(x, y, z, false, currentChunk.Voxels[x, y, z].Color);
+                currentChunk.UpdateMesh();
+            }
+
+            if (cks.IsKeyDown(Keys.LeftControl) && (cks.IsKeyDown(Keys.V) && !lks.IsKeyDown(Keys.V)))
+            {
+                for (int x = (int)cursor.Position.X; x < (int)cursor.Position.X + (int)cursor.Size.X; x++)
+                    for (int y = (int)cursor.Position.Y; y < (int)cursor.Position.Y + (int)cursor.Size.Y; y++)
+                        for (int z = (int)cursor.Position.Z; z < (int)cursor.Position.Z + (int)cursor.Size.Z; z++)
+                            currentChunk.SetVoxel(x,y,z, clipBoard.Voxels[x - (int)cursor.Position.X, y - (int)cursor.Position.Y, z - (int)cursor.Position.Z].Active, clipBoard.Voxels[x - (int)cursor.Position.X, y - (int)cursor.Position.Y, z - (int)cursor.Position.Z].Color);
                 currentChunk.UpdateMesh();
             }
 
@@ -364,6 +418,14 @@ namespace VoxelSpriteEditor
             cursorEffect.View = drawEffect.View;
 
             base.Update(gameTime);
+        }
+
+        private void ClearClipboard()
+        {
+            for (int x = 0; x < 32; x++)
+                for (int y = 0; y < 32; y++)
+                    for (int z = 0; z < 32; z++)
+                        clipBoard.SetVoxel(x, y, z, false, selectedColor);
         }
 
         /// <summary>

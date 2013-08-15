@@ -11,7 +11,7 @@ namespace VoxelSpriteEditor
         const float CURSOR_SIZE = Voxel.SIZE +0.1f;
         const float CURSOR_HALF_SIZE = CURSOR_SIZE / 2f;
 
-        public Voxel Voxel = new Voxel(true,Color.Red * 0.5f);
+        public Voxel[,,] Voxels = new Voxel[32,32,32];
 
         public List<VertexPositionNormalColor> Vertices = new List<VertexPositionNormalColor>();
         public List<short> Indexes = new List<short>();
@@ -23,9 +23,10 @@ namespace VoxelSpriteEditor
 
         Color cursorColor = Color.White;
 
+        public Vector3 Size = Vector3.One;
+
         public Cursor()
         {
-            Voxel.Active = true;
             UpdateMesh();
         }
 
@@ -44,14 +45,27 @@ namespace VoxelSpriteEditor
             Vertices.Clear();
             Indexes.Clear();
 
-            Vector3 worldOffset = meshCenter;
+            for (int x = 0; x < 32; x++)
+                for (int y = 0; y < 32; y++)
+                    for (int z = 0; z < 32; z++) Voxels[x, y, z].Active = false;
 
-            MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f),cursorColor*0.5f);
-            MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
-            MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-1f, 0f, 0f), cursorColor * 0.5f);
-            MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(1f, 0f, 0f), cursorColor * 0.5f);
-            MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
-            MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f), cursorColor * 0.5f);   
+            for(int x=0;x<(int)Size.X;x++)
+                for(int y=0;y<(int)Size.Y;y++)
+                    for (int z = 0; z < (int)Size.Z; z++)
+                    {
+                        Voxels[x, y, z].Active = true;
+
+                        Vector3 worldOffset = ((new Vector3(x, y, z) * Voxel.SIZE)) + meshCenter;
+
+                        MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f),cursorColor*0.5f);
+                        MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
+                        MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-1f, 0f, 0f), cursorColor * 0.5f);
+                        MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(1f, 0f, 0f), cursorColor * 0.5f);
+                        MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
+                        MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f), cursorColor * 0.5f);   
+                    }
+
+          
 
             VertexArray = Vertices.ToArray();
             IndexArray = new short[Indexes.Count];
@@ -66,6 +80,13 @@ namespace VoxelSpriteEditor
 
             Vertices.Clear();
             Indexes.Clear();
+        }
+
+        public void ChangeSize(Vector3 amount, int limit)
+        {
+            Size += amount;
+            Size = Vector3.Clamp(Size, Vector3.One, Vector3.One * limit);
+            UpdateMesh();
         }
 
         void MakeQuad(Vector3 offset, Vector3 tl, Vector3 tr, Vector3 br, Vector3 bl, Vector3 norm, Color col)
