@@ -47,22 +47,23 @@ namespace VoxelSpriteEditor
 
             for (int x = 0; x < 32; x++)
                 for (int y = 0; y < 32; y++)
-                    for (int z = 0; z < 32; z++) Voxels[x, y, z].Active = false;
+                    for (int z = 0; z < 32; z++)
+                        if (x < (int)Size.X && y < (int)Size.Y && z < (int)Size.Z) Voxels[x, y, z].Active = true; else Voxels[x, y, z].Active = false;
 
             for(int x=0;x<(int)Size.X;x++)
                 for(int y=0;y<(int)Size.Y;y++)
                     for (int z = 0; z < (int)Size.Z; z++)
                     {
-                        Voxels[x, y, z].Active = true;
+                        
 
                         Vector3 worldOffset = ((new Vector3(x, y, z) * Voxel.SIZE)) + meshCenter;
 
-                        MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f),cursorColor*0.5f);
-                        MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
-                        MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-1f, 0f, 0f), cursorColor * 0.5f);
-                        MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(1f, 0f, 0f), cursorColor * 0.5f);
-                        MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
-                        MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f), cursorColor * 0.5f);   
+                        if (!IsVoxelAt(x, y, z - 1)) MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f), cursorColor * 0.5f);
+                        if (!IsVoxelAt(x, y, z + 1)) MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
+                        if (!IsVoxelAt(x - 1, y, z)) MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-1f, 0f, 0f), cursorColor * 0.5f);
+                        if (!IsVoxelAt(x + 1, y, z)) MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(1f, 0f, 0f), cursorColor * 0.5f);
+                        if (!IsVoxelAt(x, y + 1, z)) MakeQuad(worldOffset, new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, 1f), cursorColor * 0.5f);
+                        if (!IsVoxelAt(x, y - 1, z)) MakeQuad(worldOffset, new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE), new Vector3(-CURSOR_HALF_SIZE, -CURSOR_HALF_SIZE, CURSOR_HALF_SIZE), new Vector3(0f, 0f, -1f), cursorColor * 0.5f);   
                     }
 
           
@@ -101,6 +102,13 @@ namespace VoxelSpriteEditor
             Indexes.Add(2);
             Indexes.Add(3);
             Indexes.Add(0);
+        }
+
+        public bool IsVoxelAt(int x, int y, int z)
+        {
+            if (x >= 0 && x < 32 && y >= 0 && y < 32 && z >= 0 && z < 32) return Voxels[x, y, z].Active;
+
+            return false;
         }
     }
 }

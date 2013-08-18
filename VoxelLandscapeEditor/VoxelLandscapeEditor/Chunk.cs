@@ -10,7 +10,7 @@ namespace VoxelLandscapeEditor
 {
     public class Chunk
     {
-        public const int X_SIZE = 32, Y_SIZE = 32, Z_SIZE = 32;
+        public const int X_SIZE = 16, Y_SIZE = 16, Z_SIZE = 32;
 
         public Voxel[, ,] Voxels = new Voxel[X_SIZE,Y_SIZE,Z_SIZE];
 
@@ -51,13 +51,13 @@ namespace VoxelLandscapeEditor
             }
         }
 
-        public void SetVoxel(int x, int y, int z, bool active, short destrutable, VoxelType type, Color top, Color side)
+        public void SetVoxel(int x, int y, int z, bool active, short destructable, VoxelType type, Color top, Color side)
         {
             if (x < 0 || y < 0 || z < 0 || x >= X_SIZE || y >= Y_SIZE || z >= Z_SIZE) return;
 
             Voxels[x, y, z].Active = active;
             Voxels[x, y, z].Type = type;
-            Voxels[x, y, z].Destructable = destrutable;
+            Voxels[x, y, z].Destructable = destructable;
             Voxels[x, y, z].TR = top.R;
             Voxels[x, y, z].TG = top.G;
             Voxels[x, y, z].TB = top.B;

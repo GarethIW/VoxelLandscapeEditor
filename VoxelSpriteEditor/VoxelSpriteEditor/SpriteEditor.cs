@@ -79,6 +79,7 @@ namespace VoxelSpriteEditor
         {
             graphics.PreferredBackBufferWidth = 1235;
             graphics.PreferredBackBufferHeight = 768;
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
             IsMouseVisible = true;
             graphics.ApplyChanges();
 
@@ -314,7 +315,7 @@ namespace VoxelSpriteEditor
 
             if (cks.IsKeyDown(Keys.F12) && !lks.IsKeyDown(Keys.F12))
             {
-                if(sprite.X_SIZE<16)
+                if(sprite.X_SIZE<32)
                     sprite = new VoxelSprite(sprite.X_SIZE + 1, sprite.Y_SIZE + 1, sprite.Z_SIZE + 1, GraphicsDevice);
             }
             if (cks.IsKeyDown(Keys.F11) && !lks.IsKeyDown(Keys.F11))
