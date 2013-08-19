@@ -132,16 +132,22 @@ namespace VoxelLandscapeEditor
 
         internal void MakeTree(int x, int y, int z)
         {
-            int height = 3 + Helper.Random.Next(10);
+            int height = 6 + Helper.Random.Next(10);
+            if (z - height < 0) height -= ((z - height)-1);
             for (int h = z; h > z - height; h--)
             {
+              
                 SetVoxel(x, y, h, true, 0, VoxelType.Tree, new Color(0.4f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f), new Color(0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f));
+                SetVoxel(x+1, y, h, true, 0, VoxelType.Tree, new Color(0.4f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f), new Color(0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f));
+                SetVoxel(x, y+1, h, true, 0, VoxelType.Tree, new Color(0.4f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f), new Color(0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f));
+                SetVoxel(x+1, y+1, h, true, 0, VoxelType.Tree, new Color(0.4f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f), new Color(0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.1f + ((float)Helper.Random.NextDouble() * 0.05f), 0.05f));
 
-                if (h < z - 4)
+
+                if (h < z - 6)
                 {
-                    for (int xx = x - 1; xx <= x + 1; xx++)
+                    for (int xx = x - 2; xx <= x + 3; xx++)
                     {
-                        for (int yy = y - 1; yy <= y + 1; yy++)
+                        for (int yy = y - 2; yy <= y + 3; yy++)
                         {
                             if (xx == x && yy == y) continue;
                             if (Helper.Random.Next(2) == 0)
@@ -154,7 +160,48 @@ namespace VoxelLandscapeEditor
             }
 
             SetVoxel(x, y, z - (height), true, 0, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
-           
+            SetVoxel(x+1, y, z - (height), true, 0, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
+            SetVoxel(x, y+1, z - (height), true, 0, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
+            SetVoxel(x+1, y+1, z - (height), true, 0, VoxelType.Leaf, new Color(0.2f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f), new Color(0.2f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0.2f));
+
+            
+        }
+
+        public void SwitchTheme(Theme t)
+        {
+            foreach (Chunk c in Chunks)
+            {
+                for (int x = 0; x < Chunk.X_SIZE; x++)
+                    for (int y = 0; y < Chunk.Y_SIZE; y++)
+                        for (int z = 0; z < Chunk.Z_SIZE; z++)
+                            if (c.Voxels[x,y,z].Active && c.Voxels[x, y, z].Type == VoxelType.Ground) c.SetVoxel(x, y, z, true, 0, VoxelType.Ground, ThemeTopColor(t), ThemeSideColor(t));
+            }
+        }
+
+        public Color ThemeTopColor(Theme t)
+        {
+            switch(t)
+            {
+                case Theme.Jungle:
+                    return new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f);
+                case Theme.Snow:
+                    float rg = 0.8f + ((float)Helper.Random.NextDouble() * 0.2f);
+                    return new Color(rg, rg, 1f);
+                default:
+                    return new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f);
+            }
+        }
+        public Color ThemeSideColor(Theme t)
+        {
+            switch (t)
+            {
+                case Theme.Jungle:
+                    return new Color(0f, 0.3f, 0f);
+                case Theme.Snow:
+                    return new Color(0.5f, 0.5f, 0.6f);
+                default:
+                    return new Color(0f, 0.3f, 0f);
+            }
         }
     }
 }

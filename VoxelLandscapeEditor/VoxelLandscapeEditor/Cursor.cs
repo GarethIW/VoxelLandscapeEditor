@@ -14,6 +14,13 @@ namespace VoxelLandscapeEditor
         Prefab
     }
 
+    public enum Theme
+    {
+        Jungle,
+        Snow,
+        Desert
+    }
+
     public class Cursor
     {
         public const int X_SIZE = 32, Y_SIZE = 32, Z_SIZE = 1;
@@ -32,6 +39,7 @@ namespace VoxelLandscapeEditor
         public int Height = 5;
 
         public CursorMode Mode;
+        public Theme Theme;
 
         public short destructable = 0;
 
@@ -123,7 +131,7 @@ namespace VoxelLandscapeEditor
                             Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
                             for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
                             {
-                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z>=Chunk.Z_SIZE-Height, 0, VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
+                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z>=Chunk.Z_SIZE-Height, 0, VoxelType.Ground, gameWorld.ThemeTopColor(Theme), gameWorld.ThemeSideColor(Theme));
                             }
                         }
                     }

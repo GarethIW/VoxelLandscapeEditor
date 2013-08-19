@@ -176,6 +176,19 @@ namespace VoxelLandscapeEditor
                 }
             }
 
+            if (cks.IsKeyDown(Keys.F10) && !lks.IsKeyDown(Keys.F10))
+            {
+                cursor.Theme++;
+                if ((int)cursor.Theme > Enum.GetValues(typeof(Theme)).Length - 1) cursor.Theme = 0;
+                if (cks.IsKeyDown(Keys.LeftShift)) gameWorld.SwitchTheme(cursor.Theme);
+            }
+            if (cks.IsKeyDown(Keys.F9) && !lks.IsKeyDown(Keys.F9))
+            {
+                cursor.Theme--;
+                if (cursor.Theme < 0) cursor.Theme = (Theme)Enum.GetValues(typeof(Theme)).Length - 1;
+                if (cks.IsKeyDown(Keys.LeftShift)) gameWorld.SwitchTheme(cursor.Theme);
+            }
+
             if (wheelDelta != 0)
             {
                
@@ -343,6 +356,7 @@ namespace VoxelLandscapeEditor
             if (cursor.Mode == CursorMode.LandScape ||cursor.Mode ==  CursorMode.Water)
             {
                 spriteBatch.DrawString(font, "Brush height: " + cursor.Height, new Vector2(20, 40), Color.White);
+                spriteBatch.DrawString(font, "Theme: " + cursor.Theme.ToString(), new Vector2(20, 60), Color.White);
             }
             if (cursor.Mode == CursorMode.Prefab)
             {
