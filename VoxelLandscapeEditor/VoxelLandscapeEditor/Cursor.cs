@@ -11,7 +11,8 @@ namespace VoxelLandscapeEditor
         LandScape,
         Trees,
         Water,
-        Prefab
+        Prefab,
+        Spawn
     }
 
     public enum Theme
@@ -20,6 +21,8 @@ namespace VoxelLandscapeEditor
         Snow,
         Desert
     }
+
+   
 
     public class Cursor
     {
@@ -56,7 +59,7 @@ namespace VoxelLandscapeEditor
             if (destructable < 0) destructable = 0;
             if (destructable > 2) destructable = 2;
 
-            if ((int)Mode > 3) Mode = 0;
+            if ((int)Mode > 4) Mode = 0;
         }
 
         public void UpdateMesh()
@@ -115,7 +118,7 @@ namespace VoxelLandscapeEditor
             Indexes.Clear();
         }
 
-        public void PerformAction(World gameWorld, PrefabChunk prefab)
+        public void PerformAction(World gameWorld, PrefabChunk prefab, int selectedSpawn, int spawnRot)
         {
             // Need to make it so voxels have a type and then we can check if tree so we don't put trees on top of trees yo
 
@@ -192,6 +195,14 @@ namespace VoxelLandscapeEditor
                         }
                     }
 
+                    break;
+                case CursorMode.Spawn:
+                    gameWorld.Spawns.Add(new Spawn()
+                    {
+                         Position= Position,
+                         Rotation = (byte)spawnRot,
+                         Type = (SpawnType)selectedSpawn,
+                    });
                     break;
             }
         }

@@ -8,7 +8,7 @@ namespace VoxelLandscapeEditor
 {
     public class World
     {
-        public int X_CHUNKS = 25, Y_CHUNKS = 25, Z_CHUNKS = 1;
+        public int X_CHUNKS = 40, Y_CHUNKS = 40, Z_CHUNKS = 1;
         public int X_SIZE;
         public int Y_SIZE;
         public int Z_SIZE;
@@ -16,6 +16,8 @@ namespace VoxelLandscapeEditor
         const double REDRAW_INTERVAL = 60;
 
         public Chunk[, ,] Chunks;
+
+        public List<Spawn> Spawns = new List<Spawn>();
 
         double redrawTime = 0;
 

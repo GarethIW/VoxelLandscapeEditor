@@ -35,9 +35,14 @@ namespace VoxelLandscapeEditor
 
         List<PrefabChunk> Prefabs = new List<PrefabChunk>();
 
+        VoxelSprite spawnSprites = new VoxelSprite(15, 15, 15);
+
         double brushTime = 0;
 
+        int spawnRot;
+
         int selectedPrefab = 0;
+        int selectedSpawn = 0;
 
         public Editor()
         {
@@ -71,11 +76,12 @@ namespace VoxelLandscapeEditor
 
             font = Content.Load<SpriteFont>("hudfont");
 
-            gameWorld = new World(20,20,1,true);
+            gameWorld = new World(40,40,1,true);
             gameCamera = new Camera(GraphicsDevice, GraphicsDevice.Viewport);
             cursor = new Cursor();
 
             List<string> pfs = new List<String>(Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "prefabs/")));
+            LoadSave.LoadAnim(ref spawnSprites, Path.Combine(Content.RootDirectory, "spawns.vxs"));
 
             foreach (string fn in pfs)
             {
@@ -161,7 +167,7 @@ namespace VoxelLandscapeEditor
 
             if (cks.IsKeyDown(Keys.F12) && !lks.IsKeyDown(Keys.F12))
             {
-                if (gameWorld.X_CHUNKS < 20)
+                if (gameWorld.X_CHUNKS < 40)
                 {
                     gameWorld.X_CHUNKS ++;
                     gameWorld.Y_CHUNKS ++;
@@ -192,7 +198,7 @@ namespace VoxelLandscapeEditor
             if (wheelDelta != 0)
             {
                
-                if (cursor.Mode != CursorMode.Prefab)
+                if (cursor.Mode != CursorMode.Prefab && cursor.Mode !=CursorMode.Spawn)
                 {
                     if (wheelDelta > 0)
                     {
@@ -208,7 +214,7 @@ namespace VoxelLandscapeEditor
                         cursor.UpdateMesh();
                     }
                 }
-                else
+                else if(cursor.Mode== CursorMode.Prefab)
                 {
                     if (wheelDelta > 0)
                     {
@@ -223,19 +229,41 @@ namespace VoxelLandscapeEditor
                         if (selectedPrefab < 0) selectedPrefab = Prefabs.Count - 1;
                     }
                 }
+                else if (cursor.Mode == CursorMode.Spawn)
+                {
+                    if (wheelDelta > 0)
+                    {
+                        if (cks.IsKeyDown(Keys.LeftShift)) cursor.Height++;
+                        else selectedSpawn++;
+                        if (selectedSpawn >= spawnSprites.AnimChunks.Count) selectedSpawn = 0;
+                    }
+                    else
+                    {
+                        if (cks.IsKeyDown(Keys.LeftShift)) cursor.Height--;
+                        else selectedSpawn--;
+                        if (selectedSpawn < 0) selectedSpawn = spawnSprites.AnimChunks.Count - 1;
+                    }
+                }
             }
 
             if (cms.RightButton == ButtonState.Pressed && lms.RightButton != ButtonState.Pressed)
             {
-                Prefabs[selectedPrefab].Rotate();
+                if (cursor.Mode == CursorMode.Prefab) Prefabs[selectedPrefab].Rotate();
+                if (cursor.Mode == CursorMode.Spawn)
+                {
+                    spawnRot++;
+                    if (spawnRot > 3) spawnRot = 0;
+                    //for(int i=0;i<spawnSprites.AnimChunks.Count;i++)
+                      //  spawnSprites.AnimChunks[i].Rotate();
+                }
             }
 
             if (cms.LeftButton == ButtonState.Pressed)
             {
-                if (brushTime == 0) cursor.PerformAction(gameWorld, Prefabs[selectedPrefab]);
+                if (brushTime == 0) cursor.PerformAction(gameWorld, Prefabs[selectedPrefab], selectedSpawn, spawnRot);
 
                 brushTime += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (brushTime > 50) brushTime = 0;
+                if (cursor.Mode!= CursorMode.Spawn && brushTime > 50) brushTime = 0;
             }
             if (cms.LeftButton == ButtonState.Released) brushTime = 0;
 
@@ -266,7 +294,7 @@ namespace VoxelLandscapeEditor
                                 wpy = (c.worldY * Chunk.Y_SIZE) + y;
                                 wpz = (c.worldZ * Chunk.Z_SIZE) + z;
                                 for (int zz = Chunk.Z_SIZE - 1; zz >= 0; zz--) if (!gameWorld.GetVoxel(wpx, wpy, zz).Active || gameWorld.GetVoxel(wpx, wpy, zz).Type != VoxelType.Ground) { wpz = zz; break; }
-                                if (cursor.Mode == CursorMode.Prefab) wpz = (Chunk.Z_SIZE) - cursor.Height;
+                                if (cursor.Mode == CursorMode.Prefab || cursor.Mode == CursorMode.Spawn) wpz = (Chunk.Z_SIZE) - cursor.Height;
                                 cursor.Position = new Vector3(wpx, wpy, wpz);
                                 //gameWorld.SetVoxelActive(wpx, wpy, wpz, false);
                                 break;
@@ -320,20 +348,22 @@ namespace VoxelLandscapeEditor
                 }
             }
 
-
-            if (cursor.Mode != CursorMode.Prefab)
+            foreach (Spawn s in gameWorld.Spawns)
             {
-                cursorEffect.Alpha = 1f;
-                foreach (EffectPass pass in cursorEffect.CurrentTechnique.Passes)
+                drawEffect.World = Matrix.CreateRotationZ( -(MathHelper.PiOver2 * s.Rotation)) * Matrix.CreateTranslation(s.Position * Voxel.SIZE) * gameCamera.worldMatrix;
+                foreach (EffectPass pass in drawEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
 
-                    if (cursor.VertexArray != null)
-                        GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, cursor.VertexArray, 0, cursor.VertexArray.Length, cursor.IndexArray, 0, cursor.VertexArray.Length / 2);
+                    AnimChunk c = spawnSprites.AnimChunks[(int)s.Type];
+
+                    if (c.VertexArray != null)
+                        GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, c.VertexArray, 0, c.VertexArray.Length, c.IndexArray, 0, c.VertexArray.Length / 2);
 
                 }
             }
-            else
+
+            if (cursor.Mode == CursorMode.Prefab)
             {
                 if (Prefabs.Count > 0)
                 {
@@ -350,6 +380,34 @@ namespace VoxelLandscapeEditor
                     }
                 }
             }
+            else if (cursor.Mode == CursorMode.Spawn)
+            {
+                cursorEffect.Alpha = 0.5f;
+                cursorEffect.World = Matrix.CreateRotationZ(-(MathHelper.PiOver2 * spawnRot)) * Matrix.CreateTranslation(cursor.Position * Voxel.SIZE) * gameCamera.worldMatrix;
+
+                foreach (EffectPass pass in cursorEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+
+                    AnimChunk c = spawnSprites.AnimChunks[selectedSpawn];
+
+                    if (c.VertexArray != null)
+                        GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, c.VertexArray, 0, c.VertexArray.Length, c.IndexArray, 0, c.VertexArray.Length / 2);
+
+                }
+            }
+            else
+            {
+                cursorEffect.Alpha = 1f;
+                foreach (EffectPass pass in cursorEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+
+                    if (cursor.VertexArray != null)
+                        GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, cursor.VertexArray, 0, cursor.VertexArray.Length, cursor.IndexArray, 0, cursor.VertexArray.Length / 2);
+
+                }
+            }
 
             spriteBatch.Begin();
             spriteBatch.DrawString(font, cursor.Mode.ToString(), Vector2.One * 20, Color.White);
@@ -362,6 +420,10 @@ namespace VoxelLandscapeEditor
             {
                 spriteBatch.DrawString(font, "Brush height: " + cursor.Height, new Vector2(20, 40), Color.White);
                 spriteBatch.DrawString(font, "Destructable level: " + cursor.destructable, new Vector2(20, 60), Color.White);
+            }
+            if (cursor.Mode == CursorMode.Spawn)
+            {
+                spriteBatch.DrawString(font, "Spawn height: " + cursor.Height, new Vector2(20, 40), Color.White);
             }
             spriteBatch.End();
 
