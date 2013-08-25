@@ -80,6 +80,7 @@ namespace VoxelLandscapeEditor
             gameCamera = new Camera(GraphicsDevice, GraphicsDevice.Viewport);
             cursor = new Cursor();
 
+            this.EnsurePrefabs();
             List<string> pfs = new List<String>(Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "prefabs/")));
             LoadSave.LoadAnim(ref spawnSprites, Path.Combine(Content.RootDirectory, "spawns.vxs"));
 
@@ -428,6 +429,15 @@ namespace VoxelLandscapeEditor
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        void EnsurePrefabs()
+        {
+            var currentdir = Environment.CurrentDirectory;
+            var prefabsdir = Path.Combine(currentdir, @"Content\Prefabs\");
+
+            if (!Directory.Exists(prefabsdir))
+                Directory.CreateDirectory(prefabsdir);
         }
     }
 }
