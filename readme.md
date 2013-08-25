@@ -11,25 +11,20 @@
 
 ### Keys
 
-`Arrow keys` - move cursor up, down, left and right.
-`Page Up`/`Page Down` - move cursor forwards and backwards.
-`Shift + (any of the above)` - resize cursor.
-
-`Ctrl + c`, `Ctrl + x` and `Ctrl + v` - normal clipboard functions
-
-`Space` - paint voxel.
-`Tab` - delete voxel.
-`1-0` - change selected colour swatch.
-
-`Delete` - deletes the current frame.
-`Home` - copies the current frame to end.
-`End` - add blank frame at end.
-`Insert` - insert copy of current frame.
-
-`Numpad 4/5/6` - previous frame / play and stop animation / next frame.
-
-`F2` - Save
-`F5` - Load
+* `Arrow keys` - move cursor up, down, left and right.
+* `Page Up`/`Page Down` - move cursor forwards and backwards.
+* `Shift + (any of the above)` - resize cursor.
+* `Ctrl + c`, `Ctrl + x` and `Ctrl + v` - normal clipboard functions
+* `Space` - paint voxel.
+* `Tab` - delete voxel.
+* `1-0` - change selected colour swatch.
+* `Delete` - deletes the current frame.
+* `Home` - copies the current frame to end.
+* `End` - add blank frame at end.
+* `Insert` - insert copy of current frame.
+* `Numpad 4/5/6` - previous frame / play and stop animation / next frame.
+* `F2` - Save
+* `F5` - Load
 
 ### How to use
 
