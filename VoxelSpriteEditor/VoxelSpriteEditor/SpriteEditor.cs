@@ -111,7 +111,7 @@ namespace VoxelSpriteEditor
             viewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, -10), new Vector3(0, 0, 0), Vector3.Up);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 800f/600f, 0.001f, 100f);
 
-            sprite = new VoxelSprite(9, 9, 9, GraphicsDevice);
+            sprite = new VoxelSprite(16, 16,16, GraphicsDevice);
 
             drawEffect = new BasicEffect(GraphicsDevice)
             {
@@ -301,6 +301,9 @@ namespace VoxelSpriteEditor
 
             if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save(sprite, ref swatches);
             if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load(ref sprite, GraphicsDevice, ref swatches);
+
+            if (cks.IsKeyDown(Keys.F8) && !lks.IsKeyDown(Keys.F8)) TileSheetConverter.Load(ref sprite, GraphicsDevice);
+
 
             if (cks.IsKeyDown(Keys.D1)) { selectedSwatch = 0; selectedColor = swatches[0]; }
             if (cks.IsKeyDown(Keys.D2)) { selectedSwatch = 1; selectedColor = swatches[1]; }
