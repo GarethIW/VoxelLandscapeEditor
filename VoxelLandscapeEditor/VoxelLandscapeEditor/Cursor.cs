@@ -197,12 +197,24 @@ namespace VoxelLandscapeEditor
 
                     break;
                 case CursorMode.Spawn:
-                    gameWorld.Spawns.Add(new Spawn()
+                    bool found = false;
+                    for (int i = gameWorld.Spawns.Count - 1; i >= 0; i--)
                     {
-                         Position= Position,
-                         Rotation = (byte)spawnRot,
-                         Type = (SpawnType)selectedSpawn,
-                    });
+                        if (gameWorld.Spawns[i].Position == Position)
+                        {
+                            found = true;
+                            gameWorld.Spawns.RemoveAt(i);
+                        }
+                    }
+                    if (!found)
+                    {
+                        gameWorld.Spawns.Add(new Spawn()
+                        {
+                            Position = Position,
+                            Rotation = (byte)spawnRot,
+                            Type = (SpawnType)selectedSpawn,
+                        });
+                    }
                     break;
             }
         }

@@ -8,6 +8,7 @@ namespace VoxelLandscapeEditor
 {
     public enum SpawnType
     {
+        Squad,
         Single,
         HutDoor
     }
