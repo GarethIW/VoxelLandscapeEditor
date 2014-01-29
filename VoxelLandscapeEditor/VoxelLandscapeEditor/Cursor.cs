@@ -169,11 +169,9 @@ namespace VoxelLandscapeEditor
                             Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
                             for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
                             {
-                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z >= Chunk.Z_SIZE - (Height-3), 0, VoxelType.Ground, new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f), new Color(0f, 0.3f, 0f));
+                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z >= Chunk.Z_SIZE - (Height - 1), 0, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
                             }
-                            gameWorld.SetVoxel((int)pos.X, (int)pos.Y, Chunk.Z_SIZE - (Height-1) , true, 0, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
-                            gameWorld.SetVoxel((int)pos.X, (int)pos.Y, Chunk.Z_SIZE - (Height - 2), true, 0, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
-
+                           
                         }
                     }
                     break;

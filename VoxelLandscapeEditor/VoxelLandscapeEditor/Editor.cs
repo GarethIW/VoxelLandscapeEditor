@@ -282,25 +282,30 @@ namespace VoxelLandscapeEditor
                 if (!pickRay.Intersects(c.boundingSphere).HasValue) continue;
                 for (int y = 0; y < Chunk.Y_SIZE; y++)
                     for (int x = 0; x < Chunk.X_SIZE; x++)
+                    {
 
-                        for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
+                        //for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
+                        //{
+                        //if (c.Voxels[x, y, z].Active == false) continue;
+
+                        int z = Chunk.Z_SIZE - 1;
+
+                        Vector3 worldOffset = new Vector3(c.worldX * (Chunk.X_SIZE * Voxel.SIZE), c.worldY * (Chunk.Y_SIZE * Voxel.SIZE), c.worldZ * (Chunk.Z_SIZE * Voxel.SIZE)) + ((new Vector3(x, y, z) * Voxel.SIZE));
+                        BoundingBox box = new BoundingBox(worldOffset + new Vector3(-Voxel.HALF_SIZE, -Voxel.HALF_SIZE, -Voxel.HALF_SIZE), worldOffset + new Vector3(Voxel.HALF_SIZE, Voxel.HALF_SIZE, Voxel.HALF_SIZE));
+                        if (pickRay.Intersects(box).HasValue)
                         {
-                            if (c.Voxels[x, y, z].Active == false || c.Voxels[x, y, z].Type != VoxelType.Ground) continue;
-
-                            Vector3 worldOffset = new Vector3(c.worldX * (Chunk.X_SIZE * Voxel.SIZE), c.worldY * (Chunk.Y_SIZE * Voxel.SIZE), c.worldZ * (Chunk.Z_SIZE * Voxel.SIZE)) + ((new Vector3(x, y, z) * Voxel.SIZE));
-                            BoundingBox box = new BoundingBox(worldOffset + new Vector3(-Voxel.HALF_SIZE, -Voxel.HALF_SIZE, -Voxel.HALF_SIZE), worldOffset + new Vector3(Voxel.HALF_SIZE, Voxel.HALF_SIZE, Voxel.HALF_SIZE));
-                            if (pickRay.Intersects(box).HasValue)
-                            {
-                                wpx = (c.worldX * Chunk.X_SIZE) + x;
-                                wpy = (c.worldY * Chunk.Y_SIZE) + y;
-                                wpz = (c.worldZ * Chunk.Z_SIZE) + z;
-                                for (int zz = Chunk.Z_SIZE - 1; zz >= 0; zz--) if (!gameWorld.GetVoxel(wpx, wpy, zz).Active || gameWorld.GetVoxel(wpx, wpy, zz).Type != VoxelType.Ground) { wpz = zz; break; }
-                                if (cursor.Mode == CursorMode.Prefab || cursor.Mode == CursorMode.Spawn) wpz = (Chunk.Z_SIZE) - cursor.Height;
-                                cursor.Position = new Vector3(wpx, wpy, wpz);
-                                //gameWorld.SetVoxelActive(wpx, wpy, wpz, false);
-                                break;
-                            }
+                            wpx = (c.worldX * Chunk.X_SIZE) + x;
+                            wpy = (c.worldY * Chunk.Y_SIZE) + y;
+                            wpz = (c.worldZ * Chunk.Z_SIZE) + z;
+                            for (int zz = Chunk.Z_SIZE - 1; zz >= 0; zz--) if (!gameWorld.GetVoxel(wpx, wpy, zz).Active || gameWorld.GetVoxel(wpx, wpy, zz).Type != VoxelType.Ground) { wpz = zz; break; }
+                            //if (cursor.Mode == CursorMode.Prefab || cursor.Mode == CursorMode.Spawn) 
+                            wpz = (Chunk.Z_SIZE) - cursor.Height;
+                            cursor.Position = new Vector3(wpx, wpy, wpz);
+                            //gameWorld.SetVoxelActive(wpx, wpy, wpz, false);
+                            break;
                         }
+                    }
+                        //}
             }
 
             lks = cks;
