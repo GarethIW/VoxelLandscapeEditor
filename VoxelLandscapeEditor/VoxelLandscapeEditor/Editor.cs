@@ -76,7 +76,7 @@ namespace VoxelLandscapeEditor
 
             font = Content.Load<SpriteFont>("hudfont");
 
-            gameWorld = new World(40,40,1,true);
+            gameWorld = new World(50,50,1,true);
             gameCamera = new Camera(GraphicsDevice, GraphicsDevice.Viewport);
             cursor = new Cursor();
 
@@ -168,18 +168,36 @@ namespace VoxelLandscapeEditor
 
             if (cks.IsKeyDown(Keys.F12) && !lks.IsKeyDown(Keys.F12))
             {
-                if (gameWorld.X_CHUNKS < 40)
+                if (cks.IsKeyDown(Keys.LeftShift))
                 {
-                    gameWorld.X_CHUNKS ++;
-                    gameWorld.Y_CHUNKS ++;
+                    if (gameWorld.Y_CHUNKS > 5)
+                    {
+                        gameWorld.Y_CHUNKS--;
+                    }
+                }
+                else
+                {
+                    if (gameWorld.Y_CHUNKS < 50)
+                    {
+                        gameWorld.Y_CHUNKS++;
+                    }
                 }
             }
             if (cks.IsKeyDown(Keys.F11) && !lks.IsKeyDown(Keys.F11))
             {
-                if (gameWorld.X_CHUNKS > 5)
+                if (cks.IsKeyDown(Keys.LeftShift))
                 {
-                    gameWorld.X_CHUNKS--;
-                    gameWorld.Y_CHUNKS--;
+                    if (gameWorld.X_CHUNKS > 5)
+                    {
+                        gameWorld.X_CHUNKS--;
+                    }
+                }
+                else
+                {
+                    if (gameWorld.X_CHUNKS < 50)
+                    {
+                        gameWorld.X_CHUNKS++;
+                    }
                 }
             }
 

@@ -19,7 +19,8 @@ namespace VoxelLandscapeEditor
     {
         Jungle,
         Snow,
-        Desert
+        Desert,
+        Urban
     }
 
    

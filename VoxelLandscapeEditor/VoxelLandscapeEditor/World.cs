@@ -189,6 +189,11 @@ namespace VoxelLandscapeEditor
                 case Theme.Snow:
                     float rg = 0.8f + ((float)Helper.Random.NextDouble() * 0.2f);
                     return new Color(rg, rg, 1f);
+                case Theme.Desert:
+                    Color c1 = new Color(222,170,99);
+                    Color c2 = new Color(189,117,49);
+                    //Color c2 = new Color(130,80,33);
+                    return Color.Lerp(c1, c2, (float)Helper.Random.NextDouble());
                 default:
                     return new Color(0f, 0.5f + ((float)Helper.Random.NextDouble() * 0.1f), 0f);
             }
@@ -201,6 +206,8 @@ namespace VoxelLandscapeEditor
                     return new Color(0f, 0.3f, 0f);
                 case Theme.Snow:
                     return new Color(0.5f, 0.5f, 0.6f);
+                case Theme.Desert:
+                    return new Color(130, 80, 33);
                 default:
                     return new Color(0f, 0.3f, 0f);
             }
