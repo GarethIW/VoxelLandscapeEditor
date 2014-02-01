@@ -182,6 +182,8 @@ namespace VoxelLandscapeEditor
 
         public Color ThemeTopColor(Theme t)
         {
+            Color c1 = new Color();
+            Color c2 = new Color();
             switch(t)
             {
                 case Theme.Jungle:
@@ -190,8 +192,13 @@ namespace VoxelLandscapeEditor
                     float rg = 0.8f + ((float)Helper.Random.NextDouble() * 0.2f);
                     return new Color(rg, rg, 1f);
                 case Theme.Desert:
-                    Color c1 = new Color(222,170,99);
-                    Color c2 = new Color(189,117,49);
+                    c1 = new Color(222,170,99);
+                    c2 = new Color(189,117,49);
+                    //Color c2 = new Color(130,80,33);
+                    return Color.Lerp(c1, c2, (float)Helper.Random.NextDouble());
+                case Theme.Urban:
+                    c1 = new Color(75,75,75);
+                    c2 = new Color(70, 70, 70);
                     //Color c2 = new Color(130,80,33);
                     return Color.Lerp(c1, c2, (float)Helper.Random.NextDouble());
                 default:
@@ -208,6 +215,8 @@ namespace VoxelLandscapeEditor
                     return new Color(0.5f, 0.5f, 0.6f);
                 case Theme.Desert:
                     return new Color(130, 80, 33);
+                case Theme.Urban:
+                    return new Color(50, 50, 50);
                 default:
                     return new Color(0f, 0.3f, 0f);
             }
