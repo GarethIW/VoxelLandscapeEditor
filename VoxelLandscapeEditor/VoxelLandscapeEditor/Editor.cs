@@ -166,6 +166,8 @@ namespace VoxelLandscapeEditor
             if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save(gameWorld);
             if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load(ref gameWorld);
 
+            if (cks.IsKeyDown(Keys.Back) && cursor.Mode == CursorMode.Prefab) cursor.CutPrefabSapce(gameWorld, Prefabs[selectedPrefab]); 
+
             if (cks.IsKeyDown(Keys.F12) && !lks.IsKeyDown(Keys.F12))
             {
                 if (cks.IsKeyDown(Keys.LeftShift))

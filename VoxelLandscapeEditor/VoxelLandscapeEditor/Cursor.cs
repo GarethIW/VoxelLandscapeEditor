@@ -231,5 +231,24 @@ namespace VoxelLandscapeEditor
             Indexes.Add(3);
             Indexes.Add(0);
         }
+
+        internal void CutPrefabSapce(World gameWorld, PrefabChunk prefab)
+        {
+            int startX = (int)Position.X - (prefab.X_SIZE / 2);
+            int startY = (int)Position.Y - (prefab.Y_SIZE / 2);
+            int startZ = (Chunk.Z_SIZE - Height) - (prefab.Z_SIZE);
+            for (int x = 0; x < prefab.X_SIZE; x++)
+            {
+                for (int y = 0; y < prefab.Y_SIZE; y++)
+                {
+                    for (int z = 0; z < prefab.Z_SIZE; z++)
+                    {
+
+                        gameWorld.SetVoxelActive(startX + x, startY + y, startZ + z, false); // destructable, VoxelType.Prefab, new Color(prefab.Voxels[x, y, z].TR, prefab.Voxels[x, y, z].TG, prefab.Voxels[x, y, z].TB), new Color(prefab.Voxels[x, y, z].SR, prefab.Voxels[x, y, z].SG, prefab.Voxels[x, y, z].SB));    
+
+                    }
+                }
+            }
+        }
     }
 }

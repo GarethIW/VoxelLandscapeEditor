@@ -56,6 +56,7 @@ namespace VoxelLandscapeEditor
             Y_SIZE = Y_CHUNKS * Chunk.Y_SIZE;
             Z_SIZE = Z_CHUNKS * Chunk.Z_SIZE;
 
+            
             redrawTime += gameTime.ElapsedGameTime.TotalMilliseconds;
             if (redrawTime > REDRAW_INTERVAL)
             {

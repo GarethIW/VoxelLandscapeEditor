@@ -136,8 +136,8 @@ namespace VoxelLandscapeEditor
                             //    temp[(Y_SIZE - 1) - y, x, z].SG = Voxels[x, y, z].SG;
                             //    temp[(Y_SIZE - 1) - y, x, z].SB = Voxels[x, y, z].SB;
                             //}
-                            if (rot == 1 || rot==3)
-                            {
+                            //if (rot == 1 || rot==3)
+                            //{
                                 temp[y, (X_SIZE - 1)-x, z].Active = true;
                                 temp[y, (X_SIZE - 1)-x, z].Type = VoxelType.Prefab;
                                 temp[y, (X_SIZE - 1)-x, z].TR = Voxels[x, y, z].TR;
@@ -146,18 +146,18 @@ namespace VoxelLandscapeEditor
                                 temp[y, (X_SIZE - 1)-x,z].SR = Voxels[x, y, z].SR;
                                 temp[y, (X_SIZE - 1) - x, z].SG = Voxels[x, y, z].SG;
                                 temp[y, (X_SIZE - 1) - x, z].SB = Voxels[x, y, z].SB;
-                            }
-                            if (rot == 2 || rot==0)
-                            {
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].Active = true;
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].Type = VoxelType.Prefab;
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].TR = Voxels[x, y, z].TR;
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].TG = Voxels[x, y, z].TG;
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].TB = Voxels[x, y, z].TB;
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].SR = Voxels[x, y, z].SR;
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].SG = Voxels[x, y, z].SG;
-                                temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].SB = Voxels[x, y, z].SB;
-                            }
+                            //}
+                            //if (rot == 2 || rot==0)
+                            //{
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].Active = true;
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].Type = VoxelType.Prefab;
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].TR = Voxels[x, y, z].TR;
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].TG = Voxels[x, y, z].TG;
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].TB = Voxels[x, y, z].TB;
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].SR = Voxels[x, y, z].SR;
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].SG = Voxels[x, y, z].SG;
+                            //    temp[(Y_SIZE - 1) - y, (X_SIZE - 1) - x, z].SB = Voxels[x, y, z].SB;
+                            //}
                         }
                     }
                 }
