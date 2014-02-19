@@ -44,6 +44,8 @@ namespace VoxelLandscapeEditor
         int selectedPrefab = 0;
         int selectedSpawn = 0;
 
+        bool zoom = false;
+
         public Editor()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -147,7 +149,10 @@ namespace VoxelLandscapeEditor
             if (cks.IsKeyDown(Keys.Left) || cks.IsKeyDown(Keys.A))
                 moveVector += new Vector3(1, 0, 0);
             gameCamera.AddToPosition(moveVector);
+            gameCamera.UpdateViewMatrix();
             //gameCamera.Rotate(mousedelta.X, mousedelta.Y);
+
+            if (cks.IsKeyDown(Keys.Z) && !lks.IsKeyDown(Keys.Z)) gameCamera.Zoom = !gameCamera.Zoom;
 
             if (cks.IsKeyDown(Keys.PageUp) && !lks.IsKeyDown(Keys.PageUp))
             {

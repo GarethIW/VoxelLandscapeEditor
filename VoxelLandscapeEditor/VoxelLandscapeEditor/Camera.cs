@@ -20,13 +20,18 @@ namespace VoxelLandscapeEditor
         public float Roll = MathHelper.Pi;
         public float Pitch = -0.2f;
 
+        public bool Zoom = false;
+
+        public float Rot = 0f;
+
         const float moveSpeed = 0.1f;
+
 
         public Camera(GraphicsDevice gd, Viewport vp)
         {
             worldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
             Matrix cameraRotation = Matrix.CreateRotationZ(Roll) * Matrix.CreateRotationX(Pitch) * Matrix.CreateRotationY(Yaw);
-            viewMatrix = Matrix.CreateLookAt(new Vector3(0,20,-30), new Vector3(0, 0, 0), Vector3.Down);
+            viewMatrix = Matrix.CreateLookAt(new Vector3(0,20,Zoom?-50:-30), new Vector3(0, 0, Zoom?-20:0), Vector3.Down);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, vp.AspectRatio, 0.001f, 300f);
 
             boundingFrustum = new BoundingFrustum(viewMatrix * projectionMatrix);
@@ -38,9 +43,12 @@ namespace VoxelLandscapeEditor
             UpdateViewMatrix();
         }
 
-        private void UpdateViewMatrix()
+        public void UpdateViewMatrix()
         {
-            worldMatrix = Matrix.CreateWorld(Position, Vector3.Forward, Vector3.Up);
+            worldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up) * Matrix.CreateRotationZ(Rot) * Matrix.CreateTranslation(Position);
+            viewMatrix = Matrix.CreateLookAt(new Vector3(0, 20, Zoom ? -150 : -30), new Vector3(0, 0, Zoom ? -120 : 0), Vector3.Down);
+            boundingFrustum = new BoundingFrustum(viewMatrix * projectionMatrix);
+
         }
         
     }
