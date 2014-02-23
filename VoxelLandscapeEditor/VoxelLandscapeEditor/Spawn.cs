@@ -6,11 +6,14 @@ using System.Text;
 
 namespace VoxelLandscapeEditor
 {
-    public enum SpawnType
+    public enum SpawnType : byte
     {
         Squad,
         Single,
-        HutDoor
+        HutDoor,
+        RedFlag,
+        BlueFlag,
+        Hill
     }
 
     public class Spawn

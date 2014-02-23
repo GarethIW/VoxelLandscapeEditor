@@ -6,7 +6,7 @@ using System.Text;
 
 namespace VoxelLandscapeEditor
 {
-    public enum VoxelType
+    public enum VoxelType : byte
     {
         Ground,
         Tree,

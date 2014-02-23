@@ -37,6 +37,8 @@ namespace VoxelLandscapeEditor
 
         VoxelSprite spawnSprites = new VoxelSprite(15, 15, 15);
 
+        SaveForm saveForm;
+
         double brushTime = 0;
 
         int spawnRot;
@@ -64,6 +66,8 @@ namespace VoxelLandscapeEditor
             graphics.PreferredBackBufferHeight = 720;
             IsMouseVisible = true;
             graphics.ApplyChanges();
+
+            
 
             base.Initialize();
         }
@@ -110,6 +114,8 @@ namespace VoxelLandscapeEditor
                 
             };
 
+            saveForm = new SaveForm(gameWorld);
+
             GC.Collect();
         }
 
@@ -129,6 +135,9 @@ namespace VoxelLandscapeEditor
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            
+            if (!this.IsActive) return;
+            if (saveForm != null && saveForm.Visible) return;
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -168,7 +177,11 @@ namespace VoxelLandscapeEditor
             }
             if (cks.IsKeyDown(Keys.Tab) && !lks.IsKeyDown(Keys.Tab)) cursor.Mode++;
 
-            if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2)) LoadSave.Save(gameWorld);
+            if (cks.IsKeyDown(Keys.F2) && !lks.IsKeyDown(Keys.F2))
+            {
+                saveForm = new SaveForm(gameWorld);
+                saveForm.Show(); //LoadSave.Save(gameWorld);
+            }
             if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load(ref gameWorld);
 
             if (cks.IsKeyDown(Keys.Back) && cursor.Mode == CursorMode.Prefab) cursor.CutPrefabSapce(gameWorld, Prefabs[selectedPrefab]); 
@@ -212,12 +225,14 @@ namespace VoxelLandscapeEditor
             {
                 cursor.Theme++;
                 if ((int)cursor.Theme > Enum.GetValues(typeof(Theme)).Length - 1) cursor.Theme = 0;
+                gameWorld.Theme = cursor.Theme;
                 if (cks.IsKeyDown(Keys.LeftShift)) gameWorld.SwitchTheme(cursor.Theme);
             }
             if (cks.IsKeyDown(Keys.F9) && !lks.IsKeyDown(Keys.F9))
             {
                 cursor.Theme--;
                 if (cursor.Theme < 0) cursor.Theme = (Theme)Enum.GetValues(typeof(Theme)).Length - 1;
+                gameWorld.Theme = cursor.Theme;
                 if (cks.IsKeyDown(Keys.LeftShift)) gameWorld.SwitchTheme(cursor.Theme);
             }
 

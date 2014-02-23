@@ -28,24 +28,33 @@ namespace VoxelLandscapeEditor
             if (string.IsNullOrEmpty(sfd.FileName) || dr != DialogResult.OK) return;
 
 
-            using (FileStream str = new FileStream(sfd.FileName, FileMode.Create))
+            byte[] memBytes;
+            //using (FileStream str = new FileStream(sfd.FileName, FileMode.Create))
+            using (MemoryStream str = new MemoryStream())
             {
+                var sw = new StreamWriter(str);
+                sw.WriteLine(gameWorld.CodeName);
+                sw.WriteLine(gameWorld.DisplayName);
+                sw.Flush();
+
+                str.WriteByte((byte)gameWorld.Type);
+                str.WriteByte((byte)gameWorld.Theme);
                 //str.Write(gameWorld.X_CHUNKS + "," + gameWorld.Y_CHUNKS + "," + gameWorld.Z_CHUNKS + "\n");
-                using (GZipStream gzstr = new GZipStream(str, CompressionMode.Compress))
-                {
+                //using (GZipStream gzstr = new GZipStream(str, CompressionMode.Compress))
+                //{
+                
+                    str.WriteByte(Convert.ToByte(gameWorld.X_CHUNKS));
+                    str.WriteByte(Convert.ToByte(gameWorld.Y_CHUNKS));
+                    str.WriteByte(Convert.ToByte(gameWorld.Z_CHUNKS));
 
-                    gzstr.WriteByte(Convert.ToByte(gameWorld.X_CHUNKS));
-                    gzstr.WriteByte(Convert.ToByte(gameWorld.Y_CHUNKS));
-                    gzstr.WriteByte(Convert.ToByte(gameWorld.Z_CHUNKS));
-
-                    gzstr.WriteByte(Convert.ToByte(gameWorld.Spawns.Count));
+                    str.WriteByte(Convert.ToByte(gameWorld.Spawns.Count));
                     for (int i = 0; i < gameWorld.Spawns.Count; i++)
                     {
-                        gzstr.Write(BitConverter.GetBytes((int)gameWorld.Spawns[i].Position.X),0,4);
-                        gzstr.Write(BitConverter.GetBytes((int)gameWorld.Spawns[i].Position.Y), 0, 4);
-                        gzstr.Write(BitConverter.GetBytes((int)gameWorld.Spawns[i].Position.Z), 0, 4);
-                        gzstr.WriteByte(Convert.ToByte(gameWorld.Spawns[i].Type));
-                        gzstr.WriteByte(Convert.ToByte(gameWorld.Spawns[i].Rotation));
+                        str.Write(BitConverter.GetBytes((int)gameWorld.Spawns[i].Position.X),0,4);
+                        str.Write(BitConverter.GetBytes((int)gameWorld.Spawns[i].Position.Y), 0, 4);
+                        str.Write(BitConverter.GetBytes((int)gameWorld.Spawns[i].Position.Z), 0, 4);
+                        str.WriteByte(Convert.ToByte(gameWorld.Spawns[i].Type));
+                        str.WriteByte(Convert.ToByte(gameWorld.Spawns[i].Rotation));
                     }
 
                     for (int z = 0; z < gameWorld.Z_CHUNKS; z++)
@@ -57,9 +66,9 @@ namespace VoxelLandscapeEditor
                                 //str.Write("C\n");
 
                                 Chunk c = gameWorld.Chunks[x, y, z];
-                                for (int vx = 0; vx < Chunk.X_SIZE; vx++)
-                                    for (int vy = 0; vy < Chunk.Y_SIZE; vy++)
-                                        for (int vz = 0; vz < Chunk.Z_SIZE; vz++)
+                                for (byte vx = 0; vx < Chunk.X_SIZE; vx++)
+                                    for (byte vy = 0; vy < Chunk.Y_SIZE; vy++)
+                                        for (byte vz = 0; vz < Chunk.Z_SIZE; vz++)
                                         {
                                             if (!c.Voxels[vx, vy, vz].Active) continue;
 
@@ -67,27 +76,36 @@ namespace VoxelLandscapeEditor
                                             //vox += ((int)c.Voxels[vx, vy, vz].Type);
                                             //str.Write(vox + "\n");
 
-                                            gzstr.WriteByte(Convert.ToByte(vx));
-                                            gzstr.WriteByte(Convert.ToByte(vy));
-                                            gzstr.WriteByte(Convert.ToByte(vz));
-                                            gzstr.WriteByte(Convert.ToByte(c.Voxels[vx, vy, vz].Type));
-                                            gzstr.WriteByte(Convert.ToByte(c.Voxels[vx, vy, vz].Destructable));
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].TR);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].TG);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].TB);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].SR);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].SG);
-                                            gzstr.WriteByte(c.Voxels[vx, vy, vz].SB);
+                                            str.WriteByte(vx);
+                                            str.WriteByte(vy);
+                                            str.WriteByte(vz);
+                                            str.WriteByte((byte)c.Voxels[vx, vy, vz].Type);
+                                            str.WriteByte(Convert.ToByte(c.Voxels[vx, vy, vz].Destructable));
+                                            str.WriteByte(c.Voxels[vx, vy, vz].TR);
+                                            str.WriteByte(c.Voxels[vx, vy, vz].TG);
+                                            str.WriteByte(c.Voxels[vx, vy, vz].TB);
+                                            str.WriteByte(c.Voxels[vx, vy, vz].SR);
+                                            str.WriteByte(c.Voxels[vx, vy, vz].SG);
+                                            str.WriteByte(c.Voxels[vx, vy, vz].SB);
                                         }
-                                gzstr.WriteByte(Convert.ToByte('c'));
+                                str.WriteByte(Convert.ToByte('c'));
                             }
                         }
 
                     }
 
-                }
-                //str.Flush();
+                //}
+                str.Flush();
+                memBytes = str.ToArray();
+            }
 
+            using (FileStream str = new FileStream(sfd.FileName, FileMode.Create))
+            {
+                using (GZipStream gzstr = new GZipStream(str, CompressionMode.Compress))
+                {
+                    gzstr.Write(memBytes, 0, memBytes.Length);
+                    gzstr.Flush();
+                }
             }
             //}
 
@@ -156,18 +174,31 @@ namespace VoxelLandscapeEditor
                 }
             }
 
-            int pos = 0;
+            int pos = 2;
 
-            int xs = buffer[0];
-            int ys = buffer[1];
-            int zs = buffer[2];
+            var sw = new StreamReader(new MemoryStream(buffer));
+            string codename = sw.ReadLine();
+            string dispname = sw.ReadLine();
+            sw.Close();
+
+            int foundcount = 0;
+            while (foundcount < 2)
+            {
+                pos++;
+                if (buffer[pos - 2] == 13 && buffer[pos - 1] == 10) foundcount++;
+            }
+
+            int xs = buffer[pos + 2];
+            int ys = buffer[pos + 3];
+            int zs = buffer[pos + 4];
             gameWorld = new World(xs, ys, zs, false);
 
-            
+            gameWorld.Type = (MapType)buffer[pos];
+            gameWorld.Theme = (Theme)buffer[pos + 1];
 
-            int numSpawns = buffer[3];
+            int numSpawns = buffer[pos + 5];
 
-            pos = 4;
+            pos += 6;
 
             for (int i = 0; i < numSpawns; i++)
             {

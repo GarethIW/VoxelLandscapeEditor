@@ -6,12 +6,26 @@ using System.Text;
 
 namespace VoxelLandscapeEditor
 {
+    public enum MapType : byte
+    {
+        DM,
+        CTF,
+        KOTH,
+        Campaign
+    }
+
     public class World
     {
         public int X_CHUNKS = 40, Y_CHUNKS = 40, Z_CHUNKS = 1;
         public int X_SIZE;
         public int Y_SIZE;
         public int Z_SIZE;
+
+        public string DisplayName;
+        public string CodeName;
+
+        public Theme Theme;
+        public MapType Type; 
 
         const double REDRAW_INTERVAL = 60;
 
