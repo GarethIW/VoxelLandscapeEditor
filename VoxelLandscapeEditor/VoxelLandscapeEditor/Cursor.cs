@@ -47,6 +47,8 @@ namespace VoxelLandscapeEditor
 
         public short destructable = 0;
 
+        public bool MirrorMode = false;
+
         public Cursor()
         {
             UpdateMesh();
@@ -121,9 +123,15 @@ namespace VoxelLandscapeEditor
 
         public void PerformAction(World gameWorld, PrefabChunk prefab, int selectedSpawn, int spawnRot)
         {
+            PerformAction(Position, gameWorld, prefab, selectedSpawn, spawnRot);
+            if (MirrorMode && Mode != CursorMode.Spawn) PerformAction(new Vector3(((gameWorld.X_SIZE)-Position.X),Position.Y,Position.Z), gameWorld, prefab, selectedSpawn, spawnRot);
+        }
+
+        public void PerformAction(Vector3 position, World gameWorld, PrefabChunk prefab, int selectedSpawn, int spawnRot)
+        {
             // Need to make it so voxels have a type and then we can check if tree so we don't put trees on top of trees yo
 
-            Vector2 center = new Vector2(Position.X, Position.Y);
+            Vector2 center = new Vector2(position.X, position.Y);
 
             switch (Mode)
             {
@@ -145,12 +153,12 @@ namespace VoxelLandscapeEditor
                     int numTrees = 1 +(Size / 2);
                     for (int i = 0; i < numTrees; i++)
                     {
-                        Vector2 pos = Helper.RandomPointInCircle(new Vector2(Position.X,Position.Y), 0f, Size);
+                        Vector2 pos = Helper.RandomPointInCircle(new Vector2(position.X,position.Y), 0f, Size);
 
                         //int z = 0;
                         //for (int zz = 0; zz < Chunk.Z_SIZE; zz++) if (gameWorld.GetVoxel((int)Position.X, (int)Position.Y, zz).Active) { z = zz - 1; break; }
 
-                        gameWorld.MakeTree((int)pos.X, (int)pos.Y, (int)Position.Z);
+                        gameWorld.MakeTree((int)pos.X, (int)pos.Y, (int)position.Z);
                     }
 
                     //for (float a = 0f; a < MathHelper.TwoPi; a += 0.05f)
@@ -177,8 +185,8 @@ namespace VoxelLandscapeEditor
                     }
                     break;
                 case CursorMode.Prefab:
-                    int startX = (int)Position.X - (prefab.X_SIZE/2);
-                    int startY = (int)Position.Y - (prefab.Y_SIZE/2);
+                    int startX = (int)position.X - (prefab.X_SIZE/2);
+                    int startY = (int)position.Y - (prefab.Y_SIZE/2);
                     int startZ = (Chunk.Z_SIZE - Height) - (prefab.Z_SIZE);
                     for (int x = 0; x < prefab.X_SIZE; x++)
                     {
@@ -199,7 +207,7 @@ namespace VoxelLandscapeEditor
                     bool found = false;
                     for (int i = gameWorld.Spawns.Count - 1; i >= 0; i--)
                     {
-                        if (gameWorld.Spawns[i].Position == Position)
+                        if (gameWorld.Spawns[i].Position == position)
                         {
                             found = true;
                             gameWorld.Spawns.RemoveAt(i);
@@ -209,7 +217,7 @@ namespace VoxelLandscapeEditor
                     {
                         gameWorld.Spawns.Add(new Spawn()
                         {
-                            Position = Position,
+                            Position = position,
                             Rotation = (byte)spawnRot,
                             Type = (SpawnType)selectedSpawn,
                         });

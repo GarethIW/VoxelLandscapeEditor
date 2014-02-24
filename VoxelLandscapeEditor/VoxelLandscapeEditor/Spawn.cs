@@ -8,11 +8,12 @@ namespace VoxelLandscapeEditor
 {
     public enum SpawnType : byte
     {
-        Squad,
+        BlueSquad,
+        RedSquad,
         Single,
         HutDoor,
-        RedFlag,
         BlueFlag,
+        RedFlag,
         Hill
     }
 

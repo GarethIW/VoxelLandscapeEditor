@@ -184,6 +184,9 @@ namespace VoxelLandscapeEditor
             }
             if (cks.IsKeyDown(Keys.F5) && !lks.IsKeyDown(Keys.F5)) LoadSave.Load(ref gameWorld);
 
+            if (cks.IsKeyDown(Keys.F8) && !lks.IsKeyDown(Keys.F8)) cursor.MirrorMode = !cursor.MirrorMode;
+
+
             if (cks.IsKeyDown(Keys.Back) && cursor.Mode == CursorMode.Prefab) cursor.CutPrefabSapce(gameWorld, Prefabs[selectedPrefab]); 
 
             if (cks.IsKeyDown(Keys.F12) && !lks.IsKeyDown(Keys.F12))
@@ -471,6 +474,8 @@ namespace VoxelLandscapeEditor
             {
                 spriteBatch.DrawString(font, "Spawn height: " + cursor.Height, new Vector2(20, 40), Color.White);
             }
+
+            if (cursor.MirrorMode) spriteBatch.DrawString(font, "Mirror mode", new Vector2(300, 40), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
