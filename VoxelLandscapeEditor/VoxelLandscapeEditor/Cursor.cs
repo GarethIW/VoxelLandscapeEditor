@@ -124,7 +124,7 @@ namespace VoxelLandscapeEditor
         public void PerformAction(World gameWorld, PrefabChunk prefab, int selectedSpawn, int spawnRot)
         {
             PerformAction(Position, gameWorld, prefab, selectedSpawn, spawnRot);
-            if (MirrorMode && Mode != CursorMode.Spawn) PerformAction(new Vector3(((gameWorld.X_SIZE)-Position.X),Position.Y,Position.Z), gameWorld, prefab, selectedSpawn, spawnRot);
+            if (MirrorMode) PerformAction(new Vector3(((gameWorld.X_SIZE)-Position.X),Position.Y,Position.Z), gameWorld, prefab, selectedSpawn, spawnRot);
         }
 
         public void PerformAction(Vector3 position, World gameWorld, PrefabChunk prefab, int selectedSpawn, int spawnRot)
