@@ -191,7 +191,10 @@ namespace VoxelLandscapeEditor
             int xs = buffer[pos + 2];
             int ys = buffer[pos + 3];
             int zs = buffer[pos + 4];
-            gameWorld = new World(xs, ys, zs, false);
+            gameWorld = new World(50, 50, 1, false);
+            gameWorld.X_CHUNKS = xs;
+            gameWorld.Y_CHUNKS = ys;
+            gameWorld.Z_CHUNKS = 1;
 
             gameWorld.Type = (MapType)buffer[pos];
             gameWorld.Theme = (Theme)buffer[pos + 1];

@@ -215,6 +215,14 @@ namespace VoxelLandscapeEditor
                         gameWorld.X_CHUNKS--;
                     }
                 }
+                else if (cks.IsKeyDown(Keys.LeftControl))
+                {
+                    if (gameWorld.X_CHUNKS < 50)
+                    {
+                        gameWorld.X_CHUNKS++;
+                        gameWorld.PadLeft();
+                    }
+                }
                 else
                 {
                     if (gameWorld.X_CHUNKS < 50)
@@ -390,7 +398,7 @@ namespace VoxelLandscapeEditor
                         Chunk c = gameWorld.Chunks[x, y, 0];
                         if (!c.Visible) continue;
 
-                        if (c == null || c.VertexArray.Length == 0) continue;
+                        if (c == null || c.VertexArray==null || c.VertexArray.Length == 0) continue;
                         if (!gameCamera.boundingFrustum.Intersects(c.boundingSphere.Transform(Matrix.CreateTranslation(gameCamera.Position)))) continue;
                         GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColor>(PrimitiveType.TriangleList, c.VertexArray, 0, c.VertexArray.Length, c.IndexArray, 0, c.VertexArray.Length / 2);
                     }

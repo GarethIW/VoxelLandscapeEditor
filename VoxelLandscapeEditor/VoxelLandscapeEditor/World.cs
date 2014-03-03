@@ -236,5 +236,34 @@ namespace VoxelLandscapeEditor
                     return new Color(0f, 0.3f, 0f);
             }
         }
+
+        internal void PadLeft()
+        {
+            for (int x = X_CHUNKS - 1;x>0 ; x--)
+            {
+                for (int y = 0; y < Y_CHUNKS; y++)
+                {
+                    for (int z = 0; z < Z_CHUNKS; z++)
+                    {
+                        Chunks[x, y, z] = Chunks[x - 1, y, z];
+                        Chunks[x, y, z].worldX += 1;
+                        Chunks[x, y, z].Updated = true;
+                    }
+                }
+            }
+
+            for (int y = 0; y < Y_CHUNKS; y++)
+            {
+                for (int z = 0; z < Z_CHUNKS; z++)
+                {
+                    Chunks[0, y, z] = new Chunk(this, 0, y, z, true);
+                }
+            }
+
+            foreach (Spawn s in Spawns)
+            {
+                s.Position.X += Chunk.X_SIZE;
+            }
+        }
     }
 }
