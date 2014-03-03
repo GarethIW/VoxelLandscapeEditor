@@ -56,7 +56,7 @@ namespace VoxelLandscapeEditor
 
         public void Update(GameTime gameTime)
         {
-            if (Height < 2) Height = 2;
+            if (Height < 0) Height = 0;
             if (Height > 31) Height = 25;
 
             if (destructable < 0) destructable = 0;
