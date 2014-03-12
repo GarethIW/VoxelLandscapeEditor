@@ -186,6 +186,8 @@ namespace VoxelLandscapeEditor
 
             if (cks.IsKeyDown(Keys.F8) && !lks.IsKeyDown(Keys.F8)) cursor.MirrorMode = !cursor.MirrorMode;
 
+            if (cks.IsKeyDown(Keys.D1)) { cursor.Shape = CursorShape.Circle; cursor.UpdateMesh(); }
+            if (cks.IsKeyDown(Keys.D2)) { cursor.Shape = CursorShape.Square; cursor.UpdateMesh(); }
 
             if (cks.IsKeyDown(Keys.Back) && cursor.Mode == CursorMode.Prefab) cursor.CutPrefabSapce(gameWorld, Prefabs[selectedPrefab]); 
 

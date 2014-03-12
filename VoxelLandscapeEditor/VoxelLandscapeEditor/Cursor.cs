@@ -23,7 +23,11 @@ namespace VoxelLandscapeEditor
         Urban
     }
 
-   
+    public enum CursorShape
+    {
+        Circle,
+        Square
+    }
 
     public class Cursor
     {
@@ -49,6 +53,8 @@ namespace VoxelLandscapeEditor
 
         public bool MirrorMode = false;
 
+        public CursorShape Shape = CursorShape.Circle;
+
         public Cursor()
         {
             UpdateMesh();
@@ -73,14 +79,25 @@ namespace VoxelLandscapeEditor
             if (Size < 1) Size = 1;
             if (Size > 15) Size = 15;
 
-            for (float a = 0f; a < MathHelper.TwoPi; a += 0.01f)
+            switch (Shape)
             {
-                for (int r = 0; r <Size; r++)
-                {
-                    Vector2 pos = Helper.PointOnCircle(ref center, r, a);
-                    Voxels[(int)pos.X, (int)pos.Y, 0].Active = true;
-                }
-                //Voxels[(int)center.X, (int)center.Y, 0].Active = false;
+                case CursorShape.Circle:
+                    for (float a = 0f; a < MathHelper.TwoPi; a += 0.01f)
+                    {
+                        for (int r = 0; r < Size; r++)
+                        {
+                            Vector2 pos = Helper.PointOnCircle(ref center, r, a);
+                            Voxels[(int)pos.X, (int)pos.Y, 0].Active = true;
+                        }
+                        
+                    }
+                    if(Size>2) Voxels[(int)center.X + (Size-1), (int)center.Y, 0].Active = false;
+                    break;
+                case CursorShape.Square:
+                    for (int x = (int)center.X - Size; x < (int)center.X + Size; x++)
+                        for (int y = (int)center.Y - Size; y < (int)center.Y + Size; y++)
+                            Voxels[x, y, 0].Active = true;
+                    break;
             }
 
             Vector3 meshCenter = (new Vector3(X_SIZE, Y_SIZE, Z_SIZE) * Voxel.SIZE) / 2f;
@@ -136,17 +153,18 @@ namespace VoxelLandscapeEditor
             switch (Mode)
             {
                 case CursorMode.LandScape:
-                    for (float a = 0f; a < MathHelper.TwoPi; a += 0.05f)
-                    {
-                        for (int r = 0; r < Size; r++)
-                        {
-                            Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
+                    for (int x = 0; x < 32; x++)
+                        for (int y = 0; y < 32; y++)
                             for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
                             {
-                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z>=Chunk.Z_SIZE-Height, 0, VoxelType.Ground, gameWorld.ThemeTopColor(Theme), gameWorld.ThemeSideColor(Theme));
+                                if(Voxels[x,y,0].Active)
+                                    gameWorld.SetVoxel(((int)center.X - 16) + x, ((int)center.Y - 16) + y, z, z >= Chunk.Z_SIZE - Height, 0, VoxelType.Ground, gameWorld.ThemeTopColor(Theme), gameWorld.ThemeSideColor(Theme));
                             }
-                        }
-                    }
+            
+                        
+                    
+
+                    
                     break;
 
                 case CursorMode.Trees:
@@ -171,18 +189,14 @@ namespace VoxelLandscapeEditor
                     //}
                     break;
                 case CursorMode.Water:
-                    for (float a = 0f; a < MathHelper.TwoPi; a += 0.05f)
-                    {
-                        for (int r = 0; r < Size; r++)
-                        {
-                            Vector3 pos = new Vector3(Helper.PointOnCircle(ref center, r, a), 0f);
+                    for (int x = 0; x < 32; x++)
+                        for (int y = 0; y < 32; y++)
                             for (int z = Chunk.Z_SIZE - 1; z >= 0; z--)
                             {
-                                gameWorld.SetVoxel((int)pos.X, (int)pos.Y, z, z >= Chunk.Z_SIZE - (Height - 1), 0, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
+                                if(Voxels[x,y,0].Active)
+                                    gameWorld.SetVoxel(((int)center.X - 16) + x, ((int)center.Y - 16) + y, z, z >= Chunk.Z_SIZE - (Height - 1), 0, VoxelType.Water, new Color(0.1f, 0.1f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f, new Color(0.3f, 0.3f, 0.8f + ((float)Helper.Random.NextDouble() * 0.1f)) * 0.8f);
                             }
                            
-                        }
-                    }
                     break;
                 case CursorMode.Prefab:
                     int startX = (int)position.X - (prefab.X_SIZE/2);
