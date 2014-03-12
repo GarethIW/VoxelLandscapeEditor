@@ -267,7 +267,7 @@ namespace VoxelLandscapeEditor
                     {
 
                         gameWorld.SetVoxelActive(startX + x, startY + y, startZ + z, false); // destructable, VoxelType.Prefab, new Color(prefab.Voxels[x, y, z].TR, prefab.Voxels[x, y, z].TG, prefab.Voxels[x, y, z].TB), new Color(prefab.Voxels[x, y, z].SR, prefab.Voxels[x, y, z].SG, prefab.Voxels[x, y, z].SB));    
-
+                        if (MirrorMode) gameWorld.SetVoxelActive(((gameWorld.X_SIZE) - startX-prefab.X_SIZE)+x, startY+y, startZ + z, false);
                     }
                 }
             }
