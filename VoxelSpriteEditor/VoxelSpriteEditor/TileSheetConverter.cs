@@ -44,7 +44,7 @@ namespace VoxelSpriteEditor
             int xTiles = inTex.Width / vs.X_SIZE;
             int yTiles = inTex.Height / vs.Y_SIZE;
 
-            int depthIntensity = 7;
+            int depthIntensity = 1;
 
             for (int yt = 0; yt < yTiles; yt++)
             {
@@ -59,7 +59,8 @@ namespace VoxelSpriteEditor
                             Color col = colData[((vy + (yt * vs.Y_SIZE)) * inTex.Width) + (vx + (xt*vs.X_SIZE))];
                             if (col.A > 0)
                             {
-                                int depth = depthIntensity - (int)(((float)depthIntensity / (255f + 255f + 255f)) * ((float)col.R + (float)col.G + (float)col.B));
+                                //int depth = depthIntensity - (int)(((float)depthIntensity / (255f + 255f + 255f)) * ((float)col.R + (float)col.G + (float)col.B));
+                                int depth = 25;
                                 for (int vz = vs.Z_SIZE-1; vz>(depth-3); vz--)
                                     vs.AnimChunks[vs.AnimChunks.Count-1].SetVoxel(vx, vz, vs.Y_SIZE-1-vy, true, new Color(col.R, col.G, col.B));
                             }
